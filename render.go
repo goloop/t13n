@@ -4,12 +4,13 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/goloop/t13n/languages"
+	language "github.com/goloop/t13n/lang"
 )
 
-// Render ...
+// Render converts a unicode string to an ASCII string with
+// the rules of the selected language.
 func Render(lang, text string) string {
-	var languageRules = languages.LanguageRules(lang)
+	var languageRules = language.Rules(lang)
 
 	result, begin, runes, wasupper := "", true, []rune(text), false
 	for i := 0; i < len(runes); i++ {

@@ -1,4 +1,4 @@
-package languages
+package lang
 
 // Swedish (SV).
 var swedish = map[int]string{
@@ -8,8 +8,8 @@ var swedish = map[int]string{
 	246: "oe", // 246, U+00F6, 'ö', "o"
 }
 
-// The swedishRules implements the rules of transliteration into Swedish.
-func swedishRules(p, c, n rune, b bool) (string, int, bool) {
+// The svRules implements the rules of transliteration into Swedish.
+func svRules(p, c, n rune, b bool) (string, int, bool) {
 	result, id, seek, changed := "", int(c), 0, false
 	if v, ok := swedish[id]; ok {
 		result = v

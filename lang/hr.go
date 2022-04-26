@@ -1,4 +1,4 @@
-package languages
+package lang
 
 // Croatian (HR)
 var croatian = map[int]string{
@@ -6,8 +6,8 @@ var croatian = map[int]string{
 	273: "dj", // 273, U+0111, 'đ', "d"
 }
 
-// The croatianRules implements the rules of transliteration into Croatian.
-func croatianRules(p, c, n rune, b bool) (string, int, bool) {
+// The hrRules implements the rules of transliteration into Croatian.
+func hrRules(p, c, n rune, b bool) (string, int, bool) {
 	result, id, seek, changed := "", int(c), 0, false
 	if v, ok := croatian[id]; ok {
 		result = v

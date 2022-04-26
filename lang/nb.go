@@ -1,4 +1,4 @@
-package languages
+package lang
 
 // Norwegian (NB)
 var norwegian = map[int]string{
@@ -6,8 +6,8 @@ var norwegian = map[int]string{
 	248: "oe", // 248, U+00F8, 'ø', "o"
 }
 
-// The norwegianRules implements the rules of transliteration into Norwegian.
-func norwegianRules(p, c, n rune, b bool) (string, int, bool) {
+// The nbRules implements the rules of transliteration into Norwegian.
+func nbRules(p, c, n rune, b bool) (string, int, bool) {
 	result, id, seek, changed := "", int(c), 0, false
 	if v, ok := norwegian[id]; ok {
 		result = v

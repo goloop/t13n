@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/goloop/t13n/languages"
+	"github.com/goloop/t13n/lang"
 )
 
 // TestVersion tests the package version.
@@ -27,7 +27,7 @@ func TestVersion(t *testing.T) {
 func TestNew(t *testing.T) {
 	var expected = "Dobroho vechora, my z Ukrainy!"
 
-	trans := New(languages.Ukrainian)
+	trans := New(lang.Uk)
 	if v := trans.Render("Доброго вечора, ми з України!"); v != expected {
 		t.Errorf("expected %s but %s", expected, v)
 	}

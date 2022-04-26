@@ -1,4 +1,4 @@
-package languages
+package lang
 
 // Hungarian (HU)
 var hungarian = map[int]string{
@@ -16,8 +16,8 @@ var hungarian = map[int]string{
 	369: "ue", // 369, U+0171, 'ű', "u"
 }
 
-// The hungarianRules implements the rules of transliteration into Hungarian.
-func hungarianRules(p, c, n rune, b bool) (string, int, bool) {
+// The huRules implements the rules of transliteration into Hungarian.
+func huRules(p, c, n rune, b bool) (string, int, bool) {
 	result, id, seek, changed := "", int(c), 0, false
 	if v, ok := hungarian[id]; ok {
 		result = v

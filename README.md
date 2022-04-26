@@ -31,11 +31,11 @@ Example:
         "fmt"
 
         "github.com/goloop/t13n"
-        "github.com/goloop/t13n/languages"
+        "github.com/goloop/t13n/lang"
     )
 
     func main() {
-        t := t13n.Render(languages.Ukrainian, "Доброго вечора, ми з України!")
+        t := t13n.Render(lang.Uk, "Доброго вечора, ми з України!")
         fmt.Println(t)
         // Output: Dobroho vechora, my z Ukrainy!
     }
@@ -53,11 +53,11 @@ Example:
         "fmt"
 
         "github.com/goloop/t13n"
-        "github.com/goloop/t13n/languages"
+        "github.com/goloop/t13n/lang"
     )
 
     func main() {
-        t = t13n.New(languages.Ukrainian)
+        t = t13n.New(lang.Uk)
         fmt.Println(t.Render("Доброго вечора, ми з України!"))
         // Output: Dobroho vechora, my z Ukrainy!
     }
@@ -69,7 +69,8 @@ Example:
 
     func Render(lang, text string) string
 
-Render ...
+Render converts a unicode string to an ASCII string with the rules of the
+selected language.
 
 #### func  Version
 
@@ -95,4 +96,5 @@ New retursn pointer to T13n.
 
     func (t *T13n) Render(text string) string
 
-Render transliterate text.
+Render converts a unicode string to an ASCII string with the rules of the
+selected language.

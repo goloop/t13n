@@ -1,4 +1,4 @@
-package languages
+package lang
 
 // Serbian (SR)
 var serbian = map[int]string{
@@ -8,8 +8,8 @@ var serbian = map[int]string{
 	1106: "dje", // 1106, U+0452, 'ђ', "dje"
 }
 
-// The serbianRules implements the rules of transliteration into Serbian.
-func serbianRules(p, c, n rune, b bool) (string, int, bool) {
+// The srRules implements the rules of transliteration into Serbian.
+func srRules(p, c, n rune, b bool) (string, int, bool) {
 	result, id, seek, changed := "", int(c), 0, false
 	if v, ok := serbian[id]; ok {
 		result = v

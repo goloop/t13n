@@ -1,4 +1,4 @@
-package languages
+package lang
 
 // Esperanto (EO)
 var esperanto = map[int]string{
@@ -16,8 +16,8 @@ var esperanto = map[int]string{
 	365: "ux", // 365, U+016D, 'ŭ', "u"
 }
 
-// The esperantoRules implements the rules of transliteration into Esperanto.
-func esperantoRules(p, c, n rune, b bool) (string, int, bool) {
+// The eoRules implements the rules of transliteration into Esperanto.
+func eoRules(p, c, n rune, b bool) (string, int, bool) {
 	result, id, seek, changed := "", int(c), 0, false
 	if v, ok := esperanto[id]; ok {
 		result = v
