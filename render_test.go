@@ -3,7 +3,7 @@ package t13n
 import (
 	"testing"
 
-	"github.com/goloop/t13n/languages"
+	"github.com/goloop/t13n/lang"
 )
 
 // TestRender tests Render function.
@@ -34,7 +34,7 @@ func TestRender(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(languages.None, test.value); v != test.expected {
+		if v := Render(lang.None, test.value); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
@@ -72,7 +72,7 @@ func TestBosnian(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(languages.Bosnian, test.value); v != test.expected {
+		if v := Render(lang.Bs, test.value); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
@@ -92,7 +92,7 @@ func TestBulgarian(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(languages.Bulgarian, test.value); v != test.expected {
+		if v := Render(lang.Bg, test.value); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
@@ -112,7 +112,7 @@ func TestCatalan(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(languages.Catalan, test.value); v != test.expected {
+		if v := Render(lang.Ca, test.value); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
@@ -129,7 +129,7 @@ func TestCroatian(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(languages.Croatian, test.value); v != test.expected {
+		if v := Render(lang.Hr, test.value); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
@@ -145,7 +145,7 @@ func TestDanish(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(languages.Danish, test.value); v != test.expected {
+		if v := Render(lang.Da, test.value); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
@@ -162,7 +162,7 @@ func TestEsperanto(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(languages.Esperanto, test.value); v != test.expected {
+		if v := Render(lang.Eo, test.value); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
@@ -179,7 +179,7 @@ func TestGerman(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(languages.German, test.value); v != test.expected {
+		if v := Render(lang.De, test.value); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
@@ -196,7 +196,7 @@ func TestHungarian(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(languages.Hungarian, test.value); v != test.expected {
+		if v := Render(lang.Hu, test.value); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
@@ -213,7 +213,7 @@ func TestMacedonian(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(languages.Macedonian, test.value); v != test.expected {
+		if v := Render(lang.Mk, test.value); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
@@ -230,7 +230,7 @@ func TestNorwegian(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(languages.Norwegian, test.value); v != test.expected {
+		if v := Render(lang.Nb, test.value); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
@@ -248,7 +248,7 @@ func TestRussian(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(languages.Russian, test.value); v != test.expected {
+		if v := Render(lang.Ru, test.value); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
@@ -264,7 +264,7 @@ func TestSerbian(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(languages.Serbian, test.value); v != test.expected {
+		if v := Render(lang.Sr, test.value); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
@@ -288,7 +288,7 @@ func TestSlovenian(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(languages.Slovenian, test.value); v != test.expected {
+		if v := Render(lang.Sl, test.value); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
@@ -305,7 +305,7 @@ func TestSwedish(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(languages.Swedish, test.value); v != test.expected {
+		if v := Render(lang.Sv, test.value); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
@@ -392,7 +392,7 @@ func TestUkrainian(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(languages.Ukrainian, test.value); v != test.expected {
+		if v := Render(lang.Uk, test.value); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}

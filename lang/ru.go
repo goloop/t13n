@@ -1,4 +1,4 @@
-package languages
+package lang
 
 // Russian (RU)
 var russian = map[int]string{
@@ -22,8 +22,8 @@ var russian = map[int]string{
 	1105: "jo",  // 1105, U+0451, 'ё', "io"
 }
 
-// The russianRules implements the rules of transliteration into Russian.
-func russianRules(p, c, n rune, b bool) (string, int, bool) {
+// The ruRules implements the rules of transliteration into Russian.
+func ruRules(p, c, n rune, b bool) (string, int, bool) {
 	result, id, seek, changed := "", int(c), 0, false
 	if v, ok := russian[id]; ok {
 		result = v

@@ -1,4 +1,4 @@
-package languages
+package lang
 
 // Macedonian (MK).
 var macedonian = map[int]string{
@@ -19,8 +19,8 @@ var macedonian = map[int]string{
 	1119: "dj", // 1119, U+045F, 'џ', "dzh"
 }
 
-// The macedonianRules implements the rules of transliteration into Macedonian.
-func macedonianRules(p, c, n rune, b bool) (string, int, bool) {
+// The mkRules implements the rules of transliteration into Macedonian.
+func mkRules(p, c, n rune, b bool) (string, int, bool) {
 	result, id, seek, changed := "", int(c), 0, false
 	if v, ok := macedonian[id]; ok {
 		result = v

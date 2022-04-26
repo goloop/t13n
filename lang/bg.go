@@ -1,4 +1,4 @@
-package languages
+package lang
 
 // Bulgarian (BG).
 var bulgarian = map[int]string{
@@ -16,8 +16,8 @@ var bulgarian = map[int]string{
 	1103: "Ya",  // 1103, U+044F, 'я', "ia"
 }
 
-// The bulgarianRules implements the rules of transliteration into Bulgarian.
-func bulgarianRules(p, c, n rune, b bool) (string, int, bool) {
+// The bgRules implements the rules of transliteration into Bulgarian.
+func bgRules(p, c, n rune, b bool) (string, int, bool) {
 	result, id, seek, changed := "", int(c), 0, false
 	if v, ok := bulgarian[id]; ok {
 		result = v

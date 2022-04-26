@@ -1,4 +1,4 @@
-package languages
+package lang
 
 // German (DE)
 var german = map[int]string{
@@ -12,8 +12,8 @@ var german = map[int]string{
 	7838: "Ss", // 7838, U+1E9E, 'ẞ', "Ss"
 }
 
-// The germanRules implements the rules of transliteration into German.
-func germanRules(p, c, n rune, b bool) (string, int, bool) {
+// The deRules implements the rules of transliteration into German.
+func deRules(p, c, n rune, b bool) (string, int, bool) {
 	result, id, seek, changed := "", int(c), 0, false
 	if v, ok := german[id]; ok {
 		result = v

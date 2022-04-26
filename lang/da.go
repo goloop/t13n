@@ -1,4 +1,4 @@
-package languages
+package lang
 
 // Danish (DA).
 var danish = map[int]string{
@@ -8,8 +8,8 @@ var danish = map[int]string{
 	248: "oe", // 248, U+00F8, 'ø', "o"
 }
 
-// The danishRules implements the rules of transliteration into Danish.
-func danishRules(p, c, n rune, b bool) (string, int, bool) {
+// The daRules implements the rules of transliteration into Danish.
+func daRules(p, c, n rune, b bool) (string, int, bool) {
 	result, id, seek, changed := "", int(c), 0, false
 	if v, ok := danish[id]; ok {
 		result = v

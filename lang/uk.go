@@ -1,4 +1,4 @@
-package languages
+package lang
 
 // Ukrainian (UK)
 var ukrainian = map[int]string{
@@ -26,8 +26,8 @@ var ukrainian = map[int]string{
 	// [MAX VALUE: 1169]
 }
 
-// The ukrainianRules implements the rules of transliteration into Ukrainian.
-func ukrainianRules(p, c, n rune, b bool) (string, int, bool) {
+// The ukRules implements the rules of transliteration into Ukrainian.
+func ukRules(p, c, n rune, b bool) (string, int, bool) {
 	var internal = map[int]string{
 		1028: "Ie", // 1028, U+0404, 'Є', "Ye"
 		1031: "I",  // 1031, U+0407, 'Ї', "Yi"

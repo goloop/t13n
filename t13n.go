@@ -10,7 +10,8 @@ type T13n struct {
 	lang string
 }
 
-// Render transliterate text.
+// Render converts a unicode string to an ASCII string with
+// the rules of the selected language.
 func (t *T13n) Render(text string) string {
 	return Render(t.lang, text)
 }
