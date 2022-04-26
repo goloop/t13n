@@ -1,0 +1,60 @@
+package t13n
+
+import (
+	"strings"
+	"unicode"
+
+	"github.com/goloop/t13n/languages"
+)
+
+// Render ...
+func Render(lang, text string) string {
+	var languageRules = languages.LanguageRules(lang)
+
+	result, begin, runes, wasupper := "", true, []rune(text), false
+	for i := 0; i < len(runes); i++ {
+		p, c, n := rune(0), runes[i], rune(0)
+
+		if i > 0 {
+			p = runes[i-1]
+		}
+
+		if i < len(runes)-1 {
+			n = runes[i+1]
+		}
+
+		// Convert char to t13n and set changes of current language.
+		v := valueByIndex(int(c))
+		if t, m, ok := languageRules(p, c, n, begin); ok {
+			i += m
+			v = t
+		}
+
+		// If t13n is long value like: Th, ae etc. - write all symbols
+		// of t13n upper if next char is upper to.
+		cupper, nupper := unicode.IsUpper(c), unicode.IsUpper(n)
+		switch {
+		case wasupper && cupper:
+			fallthrough
+		case n != 0 && cupper && nupper:
+			v = strings.ToUpper(v)
+			wasupper = true
+		default:
+			wasupper = cupper
+		}
+
+		// Delete apostrophes.
+		apostrophe := isApostrophe(p, c, n)
+		if apostrophe {
+			v = ""
+		}
+
+		result += v
+		begin = isCharDelimiter(c) && !apostrophe
+		if begin {
+			wasupper = false
+		}
+	}
+
+	return result
+}
