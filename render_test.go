@@ -31,7 +31,7 @@ func TestRender(t *testing.T) {
 		{"ᐊᐃᓐᖓᐃ", "ainngai"},
 		{"Sæll", "Saell"},
 		{"ສະບາຍດີ", "sabaanydii"},
-		{"Hello 世界", "Hello ShiJie"},
+		{"Hello 世界", "Hello Shi Jie"},
 	}
 
 	for _, test := range tests {
