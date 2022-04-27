@@ -44,10 +44,15 @@ func Render(lang, text string) string {
 			wasupper = cupper
 		}
 
-		// Delete apostrophes.
-		apostrophe := isApostrophe(p, c, n)
-		if apostrophe {
-			v = ""
+		// Add a title style of all hieroglyphs or delete apostrophes.
+		apostrophe := false
+		if unicode.Is(unicode.Han, c) {
+			v = strings.Title(v)
+		} else {
+			apostrophe = isApostrophe(p, c, n)
+			if apostrophe {
+				v = ""
+			}
 		}
 
 		result += v
