@@ -5,6 +5,7 @@
 
 *Version: v0.2.1*
 
+**not supported**
 
 # t13n
 
