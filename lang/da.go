@@ -9,8 +9,8 @@ var danish = map[int]string{
 }
 
 // The daRules implements the rules of transliteration into Danish.
-func daRules(p, c, n rune, b bool) (string, int, bool) {
-	result, id, seek, changed := "", int(c), 0, false
+func daRules(ts TransState) (string, int, bool) {
+	result, id, seek, changed := "", int(ts.Curr), 0, false
 	if v, ok := danish[id]; ok {
 		result = v
 		changed = true

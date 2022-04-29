@@ -13,8 +13,8 @@ var german = map[int]string{
 }
 
 // The deRules implements the rules of transliteration into German.
-func deRules(p, c, n rune, b bool) (string, int, bool) {
-	result, id, seek, changed := "", int(c), 0, false
+func deRules(ts TransState) (string, int, bool) {
+	result, id, seek, changed := "", int(ts.Curr), 0, false
 	if v, ok := german[id]; ok {
 		result = v
 		changed = true

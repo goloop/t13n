@@ -23,14 +23,14 @@ var russian = map[int]string{
 }
 
 // The ruRules implements the rules of transliteration into Russian.
-func ruRules(p, c, n rune, b bool) (string, int, bool) {
-	result, id, seek, changed := "", int(c), 0, false
+func ruRules(ts TransState) (string, int, bool) {
+	result, id, seek, changed := "", int(ts.Curr), 0, false
 	if v, ok := russian[id]; ok {
 		result = v
 		changed = true
 	}
 
-	result, cid, nid, seek, changed := "", int(c), int(n), 0, false
+	result, cid, nid, seek, changed := "", int(ts.Curr), int(ts.Next), 0, false
 	switch {
 	case cid < 1025 && cid > 1105: // not ukrainian
 		return result, seek, changed

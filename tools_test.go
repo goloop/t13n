@@ -2,6 +2,8 @@ package t13n
 
 import (
 	"testing"
+
+	"github.com/goloop/t13n/lang"
 )
 
 // TestIsCharDelimiter tests isCharDelimiter function.
@@ -22,8 +24,8 @@ func TestIsCharDelimiter(t *testing.T) {
 	for _, test := range tests {
 		total := 0
 		for _, c := range test.value {
-			if isCharDelimiter(c) {
-				total += 1
+			if isDelimiter(c) {
+				total++
 			}
 		}
 
@@ -54,52 +56,27 @@ func TestIsApostrophe(t *testing.T) {
 		total := 0
 		runes := []rune(test.value)
 		for i := 0; i < len(runes); i++ {
-			p, c, n := rune(0), runes[i], rune(0)
+			ts := lang.TransState{Prev: rune(0), Curr: runes[i], Next: rune(0)}
 			if i > 0 {
-				p = runes[i-1]
+				ts.Prev = runes[i-1]
 			}
 
 			if i < len(runes)-1 {
-				n = runes[i+1]
+				ts.Next = runes[i+1]
 			}
 
-			if isApostrophe(p, c, n) {
-				total += 1
+			if isApostrophe(ts) {
+				total++
 			}
 		}
 
 		if total != test.total {
 			t.Errorf(
-				"for %s expected %d separator(s) but %d",
+				"for %s expected %d apostrophe(s) but %d",
 				test.value,
 				test.total,
 				total,
 			)
 		}
-	}
-}
-
-// TestValueByIndex tests valueByIndex function.
-func TestValueByIndex(t *testing.T) {
-	// Overflow.
-	overflow := func() (result bool) {
-		// Testing an inaccessible index will cause panic!
-		defer func() {
-			if r := recover(); r != nil {
-				result = false
-				return
-			}
-		}()
-
-		a := valueByIndex(len(dictionary))
-		if a != "" {
-			return
-		}
-
-		return true
-	}
-
-	if o := overflow(); !o {
-		t.Error("expected true but false")
 	}
 }

@@ -17,8 +17,8 @@ var bulgarian = map[int]string{
 }
 
 // The bgRules implements the rules of transliteration into Bulgarian.
-func bgRules(p, c, n rune, b bool) (string, int, bool) {
-	result, id, seek, changed := "", int(c), 0, false
+func bgRules(ts TransState) (string, int, bool) {
+	result, id, seek, changed := "", int(ts.Curr), 0, false
 	if v, ok := bulgarian[id]; ok {
 		result = v
 		changed = true
