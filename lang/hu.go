@@ -17,8 +17,8 @@ var hungarian = map[int]string{
 }
 
 // The huRules implements the rules of transliteration into Hungarian.
-func huRules(p, c, n rune, b bool) (string, int, bool) {
-	result, id, seek, changed := "", int(c), 0, false
+func huRules(ts TransState) (string, int, bool) {
+	result, id, seek, changed := "", int(ts.Curr), 0, false
 	if v, ok := hungarian[id]; ok {
 		result = v
 		changed = true

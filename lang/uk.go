@@ -27,7 +27,7 @@ var ukrainian = map[int]string{
 }
 
 // The ukRules implements the rules of transliteration into Ukrainian.
-func ukRules(p, c, n rune, b bool) (string, int, bool) {
+func ukRules(ts TransState) (string, int, bool) {
 	var internal = map[int]string{
 		1028: "Ie", // 1028, U+0404, 'Є', "Ye"
 		1031: "I",  // 1031, U+0407, 'Ї', "Yi"
@@ -41,7 +41,11 @@ func ukRules(p, c, n rune, b bool) (string, int, bool) {
 		1111: "i",  // 1111, U+0457, 'ї', "yi"
 	}
 
-	result, cid, nid, seek, changed := "", int(c), int(n), 0, false
+	if ts.IsApostrophe {
+		return "", 0, true
+	}
+
+	result, cid, nid, seek, changed := "", int(ts.Curr), int(ts.Next), 0, false
 	switch {
 	case cid < 1028 && cid > 1169: // not ukrainian
 		return result, seek, changed
@@ -63,7 +67,7 @@ func ukRules(p, c, n rune, b bool) (string, int, bool) {
 		seek = 1
 	default:
 		if v, ok := ukrainian[cid]; ok {
-			if !b {
+			if !ts.IsBegin {
 				if w, ok := internal[cid]; ok {
 					v = w
 				}

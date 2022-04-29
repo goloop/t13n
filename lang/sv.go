@@ -9,8 +9,8 @@ var swedish = map[int]string{
 }
 
 // The svRules implements the rules of transliteration into Swedish.
-func svRules(p, c, n rune, b bool) (string, int, bool) {
-	result, id, seek, changed := "", int(c), 0, false
+func svRules(ts TransState) (string, int, bool) {
+	result, id, seek, changed := "", int(ts.Curr), 0, false
 	if v, ok := swedish[id]; ok {
 		result = v
 		changed = true

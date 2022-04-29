@@ -7,8 +7,8 @@ var slovenian = map[int]string{
 }
 
 // The slRules implements the rules of transliteration into Slovenian.
-func slRules(p, c, n rune, b bool) (string, int, bool) {
-	result, id, seek, changed := "", int(c), 0, false
+func slRules(ts TransState) (string, int, bool) {
+	result, id, seek, changed := "", int(ts.Curr), 0, false
 	if v, ok := slovenian[id]; ok {
 		result = v
 		changed = true
