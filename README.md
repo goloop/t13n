@@ -3,7 +3,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/goloop/t13n)](https://goreportcard.com/report/github.com/goloop/t13n) [![License](https://img.shields.io/badge/license-BSD-blue)](https://github.com/goloop/t13n/blob/master/LICENSE) [![License](https://img.shields.io/badge/godoc-YES-green)](https://godoc.org/github.com/goloop/t13n)
 
-*Version: v1.0.1*
+*Version: v1.1.0*
 
 # t13n
 
@@ -186,6 +186,10 @@ func main() {
 ```
 
 ## Usage
+
+    var ParallelTasks = 1
+
+ParallelTasks the number of parallel transliteration tasks.
 
 #### func  Make
 
