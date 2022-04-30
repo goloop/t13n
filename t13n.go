@@ -1,6 +1,17 @@
 package t13n
 
-import "github.com/goloop/t13n/lang"
+import (
+	"runtime"
+
+	"github.com/goloop/t13n/lang"
+)
+
+// ParallelTasks the number of parallel transliteration tasks.
+var ParallelTasks = 1
+
+func init() {
+	ParallelTasks = runtime.NumCPU()
+}
 
 // New retursn pointer to T13n.
 func New() *T13n {
