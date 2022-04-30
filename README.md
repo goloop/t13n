@@ -3,7 +3,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/goloop/t13n)](https://goreportcard.com/report/github.com/goloop/t13n) [![License](https://img.shields.io/badge/license-BSD-blue)](https://github.com/goloop/t13n/blob/master/LICENSE) [![License](https://img.shields.io/badge/godoc-YES-green)](https://godoc.org/github.com/goloop/t13n)
 
-*Version: v1.0.0*
+*Version: v1.0.1*
 
 # t13n
 
@@ -221,7 +221,8 @@ Version returns the version of the module.
 
 #### type T13n
 
-    type T13n struct {}
+    type T13n struct {
+    }
 
 
 T13n the t13n constructor.

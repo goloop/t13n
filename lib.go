@@ -144,8 +144,8 @@ var lib = [65534]string{
 	"{",                     // 140, U+008C, '', PARTIAL LINE UP
 	"}",                     // 141, U+008D, '', REVERSE LINE FEED
 	"Z",                     // 142, U+008E, '', SINGLE SHIFT TWO
-	"", // 143, U+008F, '', SINGLE SHIFT THREE
-	"", // 144, U+0090, '', DEVICE CONTROL STRING
+	"",                      // 143, U+008F, '', SINGLE SHIFT THREE
+	"",                      // 144, U+0090, '', DEVICE CONTROL STRING
 	"'",                     // 145, U+0091, '', PRIVATE USE ONE
 	"'",                     // 146, U+0092, '', PRIVATE USE TWO
 	"\"",                    // 147, U+0093, '', SET TRANSMIT STATE
@@ -161,7 +161,7 @@ var lib = [65534]string{
 	"",                      // 157, U+009D, '', OPERATING SYSTEM COMMAND
 	"z",                     // 158, U+009E, '', PRIVACY MESSAGE
 	"Y",                     // 159, U+009F, '', APPLICATION PROGRAM COMMAND
-	"", // 160, U+00A0, ' ', NO-BREAK SPACE
+	"",                      // 160, U+00A0, ' ', NO-BREAK SPACE
 	"i",                     // 161, U+00A1, '¡', INVERTED EXCLAMATION MARK
 	"C/",                    // 162, U+00A2, '¢', CENT SIGN
 	"PS",                    // 163, U+00A3, '£', POUND SIGN
