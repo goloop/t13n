@@ -2,7 +2,7 @@
 // converting text in unicode format to ASCII format.
 package t13n
 
-const version = "1.0.0"
+const version = "1.0.1"
 
 // Version returns the version of the module.
 func Version() string {
