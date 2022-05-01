@@ -27,5 +27,5 @@ func Trans(l, t string) string {
 // Render converts a unicode string to an ASCII string with
 // the rules of the selected language and with custom rules.
 func Render(l, t string, fn lang.TransRules) (result string) {
-	return render(l, t, fn, ParallelTasks)
+	return renderString(l, t, fn, ParallelTasks)
 }

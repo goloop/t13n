@@ -45,26 +45,26 @@ func ukRules(ts TransState) (string, int, bool) {
 		return "", 0, true
 	}
 
-	result, cid, nid, seek, changed := "", int(ts.Curr), int(ts.Next), 0, false
+	result, cid, nid, offset, changed := "", int(ts.Curr), int(ts.Next), 0, false
 	switch {
 	case cid < 1028 && cid > 1169: // not ukrainian
-		return result, seek, changed
+		return result, offset, changed
 	case cid == 1047 && (nid == 1043 || nid == 1075): // ЗГ || Зг
 		changed = true
 		result = "Zgh"
-		seek = 1
+		offset = 1
 	case cid == 1079 && (nid == 1043 || nid == 1075): // зГ || зг
 		changed = true
 		result = "zgh"
-		seek = 1
+		offset = 1
 	case cid == 1059 && (nid == 1049 || nid == 1081): // УЙ || Уй
 		changed = true
 		result = "Uy"
-		seek = 1
+		offset = 1
 	case cid == 1091 && (nid == 1049 || nid == 1081): // уЙ || уй
 		changed = true
 		result = "uy"
-		seek = 1
+		offset = 1
 	default:
 		if v, ok := ukrainian[cid]; ok {
 			if !ts.IsBegin {
@@ -78,5 +78,5 @@ func ukRules(ts TransState) (string, int, bool) {
 		}
 	}
 
-	return result, seek, changed
+	return result, offset, changed
 }
