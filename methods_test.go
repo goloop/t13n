@@ -61,6 +61,7 @@ func TestMake(t *testing.T) {
 		{"こんにちは、みんな", "Ko N Ni Chi Ha Mi N Na"},
 	}
 
+	singleThreadedLen = 0
 	for _, test := range tests {
 		if v := Make(test.value); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)

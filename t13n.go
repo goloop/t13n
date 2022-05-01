@@ -6,8 +6,13 @@ import (
 	"github.com/goloop/t13n/lang"
 )
 
-// ParallelTasks the number of parallel transliteration tasks.
-var ParallelTasks = 1
+var (
+	// ParallelTasks the number of parallel transliteration tasks.
+	ParallelTasks = 1
+
+	// The minimum number of characters to parallelize the transliteration.
+	singleThreadedLen = 256
+)
 
 // Module initialization.
 func init() {

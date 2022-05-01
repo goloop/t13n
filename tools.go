@@ -142,7 +142,7 @@ func toChunks(chars []rune, n int) ([][]rune, int) {
 	switch {
 	case total < n:
 		n = total
-	case n < 1 || len(chars) < 256:
+	case n < 1 || len(chars) < singleThreadedLen:
 		n = 1
 	}
 
