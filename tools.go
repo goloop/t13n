@@ -8,11 +8,11 @@ import (
 	"github.com/goloop/t13n/lang"
 )
 
-// The transChunkState ...
+// The transChunkState the state of transliteration of a single chunk.
 type transChunkState struct {
-	ID    int
-	Value string
-	Seek  int
+	id     int
+	value  string
+	offset int
 }
 
 // The isDelimiter returns true if char is characters delimiter.
@@ -20,6 +20,8 @@ type transChunkState struct {
 // - the number is also a delimiter of characters;
 // - the apostrophe is also a delimiter.
 func isDelimiter(c rune) bool {
+	// Separator ranges.
+	// Important: edit maps ascending order only!
 	var separators = [][]int{
 		{9, 9},
 		{32, 64},
@@ -28,12 +30,19 @@ func isDelimiter(c rune) bool {
 		{8216, 8217},
 	}
 
+	// The zero character is also a separator.
 	id := int(c)
 	if id == 0 {
 		return true
 	}
 
 	for _, interval := range separators {
+		// Abort the check if there are no actual ranges in the list below.
+		if id < interval[0] {
+			break
+		}
+
+		// Char is separator if the character belongs to a range.
 		if id >= interval[0] && id <= interval[1] {
 			return true
 		}
@@ -45,12 +54,14 @@ func isDelimiter(c rune) bool {
 // The isApostrophe returns true if char is apostrophe.
 // The apostrophe is quote between the characters.
 func isApostrophe(ts lang.TransState) bool {
+	// The apostrophe is a symbol '`' between two liters.
+	// If there is no previous or next character, it is exactly an apostrophe.
 	if ts.Prev == 0 || ts.Next == 0 {
 		return false
 	}
 
-	id := int(ts.Curr)
-	if id == 39 || id == 96 || id == 8217 || id == 8216 {
+	switch ts.Curr {
+	case 39, 96, 8216, 8217:
 		if !isDelimiter(ts.Prev) && !isDelimiter(ts.Next) {
 			return true
 		}
@@ -67,6 +78,17 @@ func isApostrophe(ts lang.TransState) bool {
 //
 // Returns a chunk slice (slice of character slices) and
 // the actual number of chunks.
+//
+// Note:
+// A simpler algorithm is to split the runes by the nearest separator.
+// This will prevent line breaks between characters that form a single
+// sound (this is important for some language regional rules).
+//
+// But this approach requires an additional subcycle of search
+// for a separator, very inefficient for the generated custom text
+// where there are no separators, doesn't allow to allocate memory
+// in advance to save chunks (this should be done in the process of
+// chunk formation, which takes some CPU time).
 func toChunks(chars []rune, n int) ([][]rune, int) {
 	var (
 		step   int      // the size of the chunk
@@ -127,8 +149,8 @@ func renderChunk(
 	ch chan transChunkState,
 ) {
 	var (
-		value string
-		seek  int
+		value  string
+		offset int
 	)
 
 	// Parse current chunk.
@@ -154,9 +176,9 @@ func renderChunk(
 		ts.Value = String(ts.Curr)
 		ts.IsApostrophe = isApostrophe(ts)
 		if transRules != nil {
-			seek = 0
+			offset = 0
 			if t, m, ok := transRules(ts); ok {
-				seek = m
+				offset = m
 				ts.Value = t
 			}
 		}
@@ -185,19 +207,19 @@ func renderChunk(
 		// Custom extensions.
 		if customRules != nil {
 			if t, m, ok := customRules(ts); ok {
-				seek = m
+				offset = m
 				ts.Value = t
 			}
 		}
 
-		i += seek
+		i += offset
 		value += ts.Value
 		isBegin = isDelimiter(ts.Curr) && !ts.IsApostrophe
 
 		// If the loop ends not with the last character but due to the offset,
 		// then the offset must be canceled (it has already worked).
-		if i-seek < len(chars)-1 {
-			seek = 0
+		if i-offset < len(chars)-1 {
+			offset = 0
 		}
 
 		// If the previous character was a break, it cannot be is upper.
@@ -206,10 +228,10 @@ func renderChunk(
 		}
 	}
 
-	ch <- transChunkState{ID: id, Value: value, Seek: seek}
+	ch <- transChunkState{id: id, value: value, offset: offset}
 }
 
-// The render converts a unicode string to an ASCII string with
+// The renderString converts a unicode string to an ASCII string with
 // the rules of the selected language and with custom rules.
 //
 // Where is:
@@ -217,7 +239,7 @@ func renderChunk(
 //  t - text to conversion;
 //  fn - custom translation rules;
 //  numberThreads - number of threads for parsing.
-func render(l, t string, fn lang.TransRules, numberThreads int) string {
+func renderString(l, t string, fn lang.TransRules, numberThreads int) string {
 	var result string
 
 	// Split the text into chunks of runes.
@@ -281,16 +303,16 @@ func render(l, t string, fn lang.TransRules, numberThreads int) string {
 	// number (don't use a slice to avoid its sorting cycle).
 	for len(tmp) < total {
 		v := <-ch
-		tmp[v.ID] = v
+		tmp[v.id] = v
 	}
 
 	// Concatenation of chunks.
-	seek := 0
+	offset := 0
 	for i := 0; i < len(tmp); i++ {
 		v, _ := tmp[i]
-		runes := []rune(v.Value)
-		result += string(runes[seek:])
-		seek = v.Seek
+		runes := []rune(v.value)
+		result += string(runes[offset:])
+		offset = v.offset
 	}
 
 	return result
