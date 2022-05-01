@@ -52,6 +52,42 @@ func isDelimiter(c rune) bool {
 	return false
 }
 
+// The isHieroglyph returns true if char is hieroglyph.
+func isHieroglyph(c rune) bool {
+	var hieroglyphs = [][]int{
+		{11904, 11929},
+		{11931, 12019},
+		{12032, 12245},
+		{12293, 12295},
+		{12321, 12329},
+		{12344, 12347},
+
+		{12353, 12438},
+		{12445, 12447},
+
+		{13312, 19903},
+		{19968, 40956},
+		{63744, 64109},
+		{64112, 64217},
+
+		// Todo: find all ranges of characters.
+		// See example: unicode.Is(unicode.Han, 'ん')
+	}
+
+	id := int(c)
+	for _, item := range hieroglyphs {
+		if id < item[0] {
+			break
+		}
+
+		if id >= item[0] && id <= item[1] {
+			return true
+		}
+	}
+
+	return false
+}
+
 // The isApostrophe returns true if char is apostrophe.
 // The apostrophe is quote between the characters.
 func isApostrophe(ts lang.TransState) bool {
@@ -106,7 +142,7 @@ func toChunks(chars []rune, n int) ([][]rune, int) {
 	switch {
 	case total < n:
 		n = total
-	case n < 1:
+	case n < 1 || len(chars) < 256:
 		n = 1
 	}
 
@@ -199,7 +235,7 @@ func renderChunk(
 
 		// Add a space to the right and add title style
 		// of all hieroglyphs or delete apostrophes.
-		if unicode.Is(unicode.Han, ts.Curr) {
+		if isHieroglyph(ts.Curr) {
 			ts.Value = strings.Title(ts.Value)
 			if int(ts.Next) != 0 && !isDelimiter(ts.Next) {
 				ts.Value += " "
@@ -307,6 +343,7 @@ func renderString(l, t string, ctr lang.TransRules, nt int) string {
 		v := <-ch
 		tmp[v.id] = v
 	}
+	close(ch)
 
 	// Concatenation of chunks.
 	offset := 0
