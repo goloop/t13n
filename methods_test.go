@@ -58,6 +58,7 @@ func TestMake(t *testing.T) {
 		{"Sæll", "Saell"},
 		{"ສະບາຍດີ", "sabaanydii"},
 		{"Hello 世界", "Hello Shi Jie"},
+		{"こんにちは、みんな", "Ko N Ni Chi Ha Mi N Na"},
 	}
 
 	for _, test := range tests {
