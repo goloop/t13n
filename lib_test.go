@@ -6,7 +6,7 @@ import (
 
 // TestLib tests lib data.
 func TestLib(t *testing.T) {
-	// Size.
+	// Lib size.
 	if len(lib) != 65534 {
 		t.Errorf("expected %d but %d", 65534, len(lib))
 	}

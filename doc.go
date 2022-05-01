@@ -1,10 +1,11 @@
-// Package t13n (transliteration) implements methods for
-// converting text in unicode format to ASCII format.
+// Package t13n (transliteration) implements methods
+// for converting Unicode text to ASCII.
 package t13n
 
+// Version of the module as {major_version}.{minor_version}.{patch_version}.
 const version = "1.1.0"
 
 // Version returns the version of the module.
 func Version() string {
-	return "v" + version
+	return "v" + version // add a v to the version number
 }

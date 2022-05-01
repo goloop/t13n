@@ -199,7 +199,7 @@ Make converts a unicode string to an ASCII string.
 
 #### func  Render
 
-    func Render(l, t string, fn lang.TransRules) (result string)
+    func Render(l, t string, ctr lang.TransRules) (result string)
 
 Render converts a unicode string to an ASCII string with the rules of the
 selected language and with custom rules.
@@ -252,6 +252,6 @@ language.
 
 #### func (*T13n) Rules
 
-    func (t *T13n) Rules(fn lang.TransRules) *T13n
+    func (t *T13n) Rules(ctr lang.TransRules) *T13n
 
 Rules establishes a custom extensions method of language rules.

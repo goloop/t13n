@@ -16,6 +16,7 @@ type transChunkState struct {
 }
 
 // The isDelimiter returns true if char is characters delimiter.
+//
 // Importantly:
 // - the number is also a delimiter of characters;
 // - the apostrophe is also a delimiter.
@@ -55,7 +56,8 @@ func isDelimiter(c rune) bool {
 // The apostrophe is quote between the characters.
 func isApostrophe(ts lang.TransState) bool {
 	// The apostrophe is a symbol '`' between two liters.
-	// If there is no previous or next character, it is exactly an apostrophe.
+	// If there is no previous or next character,
+	// it is exactly an apostrophe.
 	if ts.Prev == 0 || ts.Next == 0 {
 		return false
 	}
@@ -136,16 +138,16 @@ func toChunks(chars []rune, n int) ([][]rune, int) {
 //  isBegin - true if before the first character in the chunk
 //      was a separator (is determined outside the goroutine,
 //      as the separator is not always a divider, such as an apostrophe);
-//  prevUpper - true if prev char was is upper;
-//  transRules - language translation rules;
-//  customRules - custom translation rules;
+//  prevIsUpper - true if prev char was is upper;
+//  ltr - language translation rules;
+//  ctr - custom translation rules;
 //  ch - the result of the function.
 func renderChunk(
 	id int,
 	chars []rune,
 	prevOver, nextOver rune,
-	isBegin, prevUpper bool,
-	transRules, customRules lang.TransRules,
+	isBegin, prevIsUpper bool,
+	ltr, ctr lang.TransRules,
 	ch chan transChunkState,
 ) {
 	var (
@@ -175,9 +177,9 @@ func renderChunk(
 		// Convert char to t13n and set changes of current language.
 		ts.Value = String(ts.Curr)
 		ts.IsApostrophe = isApostrophe(ts)
-		if transRules != nil {
+		if ltr != nil {
 			offset = 0
-			if t, m, ok := transRules(ts); ok {
+			if t, m, ok := ltr(ts); ok {
 				offset = m
 				ts.Value = t
 			}
@@ -186,13 +188,13 @@ func renderChunk(
 		// If t13n is long value like: Th, ae etc. - write all symbols
 		// of t13n upper if next char is upper to.
 		switch cu, nu := unicode.IsUpper(ts.Curr), unicode.IsUpper(ts.Next); {
-		case prevUpper && cu:
+		case prevIsUpper && cu:
 			fallthrough
 		case ts.Next != 0 && cu && nu:
 			ts.Value = strings.ToUpper(ts.Value)
-			prevUpper = true
+			prevIsUpper = true
 		default:
-			prevUpper = cu
+			prevIsUpper = cu
 		}
 
 		// Add a space to the right and add title style
@@ -205,8 +207,8 @@ func renderChunk(
 		}
 
 		// Custom extensions.
-		if customRules != nil {
-			if t, m, ok := customRules(ts); ok {
+		if ctr != nil {
+			if t, m, ok := ctr(ts); ok {
 				offset = m
 				ts.Value = t
 			}
@@ -224,7 +226,7 @@ func renderChunk(
 
 		// If the previous character was a break, it cannot be is upper.
 		if isBegin {
-			prevUpper = false
+			prevIsUpper = false
 		}
 	}
 
@@ -237,14 +239,14 @@ func renderChunk(
 // Where is:
 //  l - language code;
 //  t - text to conversion;
-//  fn - custom translation rules;
-//  numberThreads - number of threads for parsing.
-func renderString(l, t string, fn lang.TransRules, numberThreads int) string {
+//  ctr - custom translation rules;
+//  nt - number of threads.
+func renderString(l, t string, ctr lang.TransRules, nt int) string {
 	var result string
 
 	// Split the text into chunks of runes.
 	runes := []rune(t)
-	chunks, total := toChunks(runes, numberThreads)
+	chunks, total := toChunks(runes, nt)
 
 	// The result of the work of goroutines on the transliteration of chunks.
 	ch := make(chan transChunkState, total)
@@ -252,7 +254,7 @@ func renderString(l, t string, fn lang.TransRules, numberThreads int) string {
 
 	// Run goroutines for chunk parsing .
 	isBegin := true
-	transRules := lang.Rules(l)
+	ltr := lang.Rules(l)
 	for i, chunk := range chunks {
 		// Determine the previous and next characters between which
 		// the first character in the chunk will be located.
@@ -274,8 +276,8 @@ func renderString(l, t string, fn lang.TransRules, numberThreads int) string {
 			nextOver,
 			isBegin,
 			unicode.IsUpper(prevOver),
-			transRules,
-			fn,
+			ltr,
+			ctr,
 			ch,
 		)
 
