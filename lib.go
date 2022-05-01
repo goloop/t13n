@@ -1,5 +1,9 @@
 package t13n
 
+// The lib array contains strings of relationships to certain
+// unicode characters. The ordinal number of the element in
+// the array corresponds to the index of the character in
+// the unicode table.
 var lib = [65534]string{
 	"",                      // 0, U+0000, '', NULL
 	"",                      // 1, U+0001, '', START OF HEADING
