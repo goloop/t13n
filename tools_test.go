@@ -92,6 +92,7 @@ func TestToChunks(t *testing.T) {
 		{[]rune(""), 12, 0},
 		{[]rune("hello world"), 12, 11},
 		{[]rune("hi"), 12, 2},
+		{[]rune("yah"), 0, 1},
 	}
 
 	for _, test := range tests {
