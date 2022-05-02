@@ -54,6 +54,7 @@ func isDelimiter(c rune) bool {
 
 // The isHieroglyph returns true if char is hieroglyph.
 func isHieroglyph(c rune) bool {
+	// It's unicode.Han and unicode.Hiragana.
 	var hieroglyphs = [][]int{
 		{11904, 11929},
 		{11931, 12019},
@@ -61,21 +62,17 @@ func isHieroglyph(c rune) bool {
 		{12293, 12295},
 		{12321, 12329},
 		{12344, 12347},
-
 		{12353, 12438},
 		{12445, 12447},
-
 		{13312, 19903},
 		{19968, 40956},
 		{63744, 64109},
 		{64112, 64217},
-
-		// Todo: find all ranges of characters.
-		// See example: unicode.Is(unicode.Han, 'ん')
 	}
 
 	id := int(c)
 	for _, item := range hieroglyphs {
+		// Unless it belongs to the ranges below.
 		if id < item[0] {
 			break
 		}

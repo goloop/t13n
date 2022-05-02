@@ -8,6 +8,7 @@ import (
 
 var (
 	// ParallelTasks the number of parallel transliteration tasks.
+	// By default, the number of threads is set as the number of CPU cores.
 	ParallelTasks = 1
 
 	// The minimum number of characters to parallelize the transliteration.
@@ -28,7 +29,7 @@ func New() *T13n {
 	}
 }
 
-// T13n the t13n constructor.
+// T13n the transliteration constructor.
 type T13n struct {
 	// Language code whose regional rules are
 	// to be used during transliteration.
@@ -41,8 +42,9 @@ type T13n struct {
 	pt int
 }
 
-// Make converts a unicode string to an ASCII string
-// with the rules of the selected language.
+// Make transliterates a unicode string to an ASCII string.
+// This method takes into account the selected language and
+// apply regional transliteration settings.
 func (t *T13n) Make(text string) string {
 	return renderString(t.lang, text, t.ctr, t.pt)
 }
