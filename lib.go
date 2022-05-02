@@ -4,6 +4,8 @@ package t13n
 // unicode characters. The ordinal number of the element in
 // the array corresponds to the index of the character in
 // the unicode table.
+//
+// https://en.wiktionary.org/wiki/龥
 var lib = [65534]string{
 	"",                      // 0, U+0000, '', NULL
 	"",                      // 1, U+0001, '', START OF HEADING
@@ -13317,7 +13319,7 @@ var lib = [65534]string{
 	"",                      // 13309, U+33FD, '㏽', IDEOGRAPHIC TELEGRAPH SYMBOL FOR DAY THIRTY
 	"",                      // 13310, U+33FE, '㏾', IDEOGRAPHIC TELEGRAPH SYMBOL FOR DAY THIRTY-ONE
 	"",                      // 13311, U+33FF, '㏿'
-	"qiu",                   // 13312, U+3400, '㐀', <CJK Ideograph Extension A, First>
+	"qiu",                   // 13312, U+3400, '㐀', CJK IDEOGRAPH EXTENSION A, FIRST
 	"tian",                  // 13313, U+3401, '㐁'
 	"[?]",                   // 13314, U+3402, '㐂'
 	"[?]",                   // 13315, U+3403, '㐃'
@@ -19909,21 +19911,21 @@ var lib = [65534]string{
 	"",                      // 19901, U+4DBD, '䶽'
 	"",                      // 19902, U+4DBE, '䶾'
 	"",                      // 19903, U+4DBF, '䶿'
-	"",                      // 19904, U+4DC0, '䷀'
-	"",                      // 19905, U+4DC1, '䷁'
-	"",                      // 19906, U+4DC2, '䷂'
-	"",                      // 19907, U+4DC3, '䷃'
-	"",                      // 19908, U+4DC4, '䷄'
-	"",                      // 19909, U+4DC5, '䷅'
-	"",                      // 19910, U+4DC6, '䷆'
-	"",                      // 19911, U+4DC7, '䷇'
-	"",                      // 19912, U+4DC8, '䷈'
-	"",                      // 19913, U+4DC9, '䷉'
-	"",                      // 19914, U+4DCA, '䷊'
-	"",                      // 19915, U+4DCB, '䷋'
-	"",                      // 19916, U+4DCC, '䷌'
-	"",                      // 19917, U+4DCD, '䷍'
-	"",                      // 19918, U+4DCE, '䷎'
+	"qian",                  // 19904, U+4DC0, '䷀', HEXAGRAM FOR THE CREATIVE HEAVEN
+	"kun",                   // 19905, U+4DC1, '䷁', HEXAGRAM FOR THE RECEPTIVE EARTH
+	"zhun",                  // 19906, U+4DC2, '䷂', HEXAGRAM FOR DIFFICULTY AT THE BEGINNING
+	"meng",                  // 19907, U+4DC3, '䷃', HEXAGRAM FOR YOUTHFUL FOLLY
+	"xu",                    // 19908, U+4DC4, '䷄', HEXAGRAM FOR WAITING
+	"song",                  // 19909, U+4DC5, '䷅', HEXAGRAM FOR CONFLICT
+	"shi",                   // 19910, U+4DC6, '䷆', HEXAGRAM FOR THE ARMY
+	"bi",                    // 19911, U+4DC7, '䷇', HEXAGRAM FOR HOLDING TOGETHER
+	"xiao chu",              // 19912, U+4DC8, '䷈', HEXAGRAM FOR SMALL TAMING
+	"lu",                    // 19913, U+4DC9, '䷉', EXAGRAM FOR TREADING
+	"tai",                   // 19914, U+4DCA, '䷊', HEXAGRAM FOR PEACE
+	"pi",                    // 19915, U+4DCB, '䷋', HEXAGRAM FOR STANDSTILL
+	"tong ren",              // 19916, U+4DCC, '䷌', HEXAGRAM FOR FELLOWSHIP
+	"da you",                // 19917, U+4DCD, '䷍', HEXAGRAM FOR GREAT POSSESSION
+	"qian",                  // 19918, U+4DCE, '䷎', HEXAGRAM FOR MODESTY
 	"",                      // 19919, U+4DCF, '䷏'
 	"",                      // 19920, U+4DD0, '䷐'
 	"",                      // 19921, U+4DD1, '䷑'
@@ -55208,7 +55210,7 @@ var lib = [65534]string{
 	"",                      // 55200, U+D7A0, '힠'
 	"",                      // 55201, U+D7A1, '힡'
 	"",                      // 55202, U+D7A2, '힢'
-	"",                      // 55203, U+D7A3, '힣', <Hangul Syllable, Last>
+	"",                      // 55203, U+D7A3, '힣', HANGUL SYLLABLE, LAST
 	"",                      // 55204, U+D7A4, '힤'
 	"",                      // 55205, U+D7A5, '힥'
 	"",                      // 55206, U+D7A6, '힦'
@@ -64261,13 +64263,13 @@ var lib = [65534]string{
 	"",                      // 64253, U+FAFD, '﫽'
 	"",                      // 64254, U+FAFE, '﫾'
 	"",                      // 64255, U+FAFF, '﫿'
-	"",                      // 64256, U+FB00, 'ﬀ', LATIN SMALL LIGATURE FF
-	"",                      // 64257, U+FB01, 'ﬁ', LATIN SMALL LIGATURE FI
-	"",                      // 64258, U+FB02, 'ﬂ', LATIN SMALL LIGATURE FL
-	"",                      // 64259, U+FB03, 'ﬃ', LATIN SMALL LIGATURE FFI
-	"",                      // 64260, U+FB04, 'ﬄ', LATIN SMALL LIGATURE FFL
-	"",                      // 64261, U+FB05, 'ﬅ', LATIN SMALL LIGATURE LONG S T
-	"",                      // 64262, U+FB06, 'ﬆ', LATIN SMALL LIGATURE ST
+	"ff",                    // 64256, U+FB00, 'ﬀ', LATIN SMALL LIGATURE FF
+	"fi",                    // 64257, U+FB01, 'ﬁ', LATIN SMALL LIGATURE FI
+	"fl",                    // 64258, U+FB02, 'ﬂ', LATIN SMALL LIGATURE FL
+	"fffi",                  // 64259, U+FB03, 'ﬃ', LATIN SMALL LIGATURE FFI
+	"ffl",                   // 64260, U+FB04, 'ﬄ', LATIN SMALL LIGATURE FFL
+	"ft",                    // 64261, U+FB05, 'ﬅ', LATIN SMALL LIGATURE LONG S T
+	"st",                    // 64262, U+FB06, 'ﬆ', LATIN SMALL LIGATURE ST
 	"",                      // 64263, U+FB07, '﬇'
 	"",                      // 64264, U+FB08, '﬈'
 	"",                      // 64265, U+FB09, '﬉'
