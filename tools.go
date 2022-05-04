@@ -230,14 +230,13 @@ func renderChunk(
 			prevIsUpper = cu
 		}
 
-		// // Add a space to the right and add title style
-		// // of all hieroglyphs or delete apostrophes.
-		// if isHieroglyph(ts.Curr) {
-		// 	ts.Value = strings.Title(ts.Value)
-		// 	if int(ts.Next) != 0 && !isDelimiter(ts.Next) {
-		// 		ts.Value += " "
-		// 	}
-		// }
+		// Add a space to the right and add title style
+		// of all hieroglyphs or delete apostrophes.
+		if isHieroglyph(ts.Curr) {
+			if !(int(ts.Next) != 0 && !isDelimiter(ts.Next)) {
+				ts.Value = strings.Trim(ts.Value, " ")
+			}
+		}
 
 		// Custom extensions.
 		if ctr != nil {
@@ -351,5 +350,5 @@ func renderString(l, t string, ctr lang.TransRules, nt int) string {
 		offset = v.offset
 	}
 
-	return strings.Trim(result, " ")
+	return result
 }
