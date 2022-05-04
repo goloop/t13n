@@ -21,11 +21,11 @@ var macedonian = map[int]string{
 
 // The mkRules implements the rules of transliteration into Macedonian.
 func mkRules(ts TransState) (string, int, bool) {
-	result, id, seek, changed := "", int(ts.Curr), 0, false
+	result, id, offset, changed := "", int(ts.Curr), 0, false
 	if v, ok := macedonian[id]; ok {
 		result = v
 		changed = true
 	}
 
-	return result, seek, changed
+	return result, offset, changed
 }

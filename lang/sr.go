@@ -10,11 +10,11 @@ var serbian = map[int]string{
 
 // The srRules implements the rules of transliteration into Serbian.
 func srRules(ts TransState) (string, int, bool) {
-	result, id, seek, changed := "", int(ts.Curr), 0, false
+	result, id, offset, changed := "", int(ts.Curr), 0, false
 	if v, ok := serbian[id]; ok {
 		result = v
 		changed = true
 	}
 
-	return result, seek, changed
+	return result, offset, changed
 }

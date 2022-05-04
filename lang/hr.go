@@ -8,11 +8,11 @@ var croatian = map[int]string{
 
 // The hrRules implements the rules of transliteration into Croatian.
 func hrRules(ts TransState) (string, int, bool) {
-	result, id, seek, changed := "", int(ts.Curr), 0, false
+	result, id, offset, changed := "", int(ts.Curr), 0, false
 	if v, ok := croatian[id]; ok {
 		result = v
 		changed = true
 	}
 
-	return result, seek, changed
+	return result, offset, changed
 }

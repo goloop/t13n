@@ -8,11 +8,11 @@ var norwegian = map[int]string{
 
 // The nbRules implements the rules of transliteration into Norwegian.
 func nbRules(ts TransState) (string, int, bool) {
-	result, id, seek, changed := "", int(ts.Curr), 0, false
+	result, id, offset, changed := "", int(ts.Curr), 0, false
 	if v, ok := norwegian[id]; ok {
 		result = v
 		changed = true
 	}
 
-	return result, seek, changed
+	return result, offset, changed
 }

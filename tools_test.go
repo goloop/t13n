@@ -12,6 +12,7 @@ func TestIsCharDelimiter(t *testing.T) {
 		value string
 		total int
 	}{
+		{string(rune(0)), 1}, // the 0 char is separator too
 		{"\tHello world!", 3},
 		{"Hello, how are you?", 5},
 		{" !\"#$%&'()*+,-./0123456789:;<=>?@", 33},
@@ -74,6 +75,32 @@ func TestIsApostrophe(t *testing.T) {
 			t.Errorf(
 				"for %s expected %d apostrophe(s) but %d",
 				test.value,
+				test.total,
+				total,
+			)
+		}
+	}
+}
+
+// TestToChunks tests toChunks function.
+func TestToChunks(t *testing.T) {
+	var tests = []struct {
+		value []rune
+		nproc int
+		total int
+	}{
+		{[]rune(""), 12, 0},
+		{[]rune("hello world"), 12, 11},
+		{[]rune("hi"), 12, 2},
+		{[]rune("yah"), 0, 1},
+	}
+
+	for _, test := range tests {
+		_, total := toChunks(test.value, test.nproc)
+		if total != test.total {
+			t.Errorf(
+				"for `%s` expected %d separator(s) but %d",
+				string(test.value),
 				test.total,
 				total,
 			)

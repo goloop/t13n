@@ -28,43 +28,49 @@ var ukrainian = map[int]string{
 
 // The ukRules implements the rules of transliteration into Ukrainian.
 func ukRules(ts TransState) (string, int, bool) {
-	var internal = map[int]string{
-		1028: "Ie", // 1028, U+0404, 'Є', "Ye"
-		1031: "I",  // 1031, U+0407, 'Ї', "Yi"
-		1049: "I",  // 1049, U+0419, 'Й', "Y"
-		1070: "Iu", // 1070, U+042E, 'Ю', "Yu"
-		1071: "Ia", // 1071, U+042F, 'Я', "Ya"
-		1081: "i",  // 1081, U+0439, 'й', "y"
-		1102: "iu", // 1102, U+044E, 'ю', "yu"
-		1103: "ia", // 1103, U+044F, 'я', "ya"
-		1108: "ie", // 1108, U+0454, 'є', "ye"
-		1111: "i",  // 1111, U+0457, 'ї', "yi"
-	}
+	var (
+		result   string
+		internal = map[int]string{
+			1028: "Ie", // 1028, U+0404, 'Є', "Ye"
+			1031: "I",  // 1031, U+0407, 'Ї', "Yi"
+			1049: "I",  // 1049, U+0419, 'Й', "Y"
+			1070: "Iu", // 1070, U+042E, 'Ю', "Yu"
+			1071: "Ia", // 1071, U+042F, 'Я', "Ya"
+			1081: "i",  // 1081, U+0439, 'й', "y"
+			1102: "iu", // 1102, U+044E, 'ю', "yu"
+			1103: "ia", // 1103, U+044F, 'я', "ya"
+			1108: "ie", // 1108, U+0454, 'є', "ye"
+			1111: "i",  // 1111, U+0457, 'ї', "yi"
+		}
+	)
 
+	// Delete apostrophe.
 	if ts.IsApostrophe {
 		return "", 0, true
 	}
 
-	result, cid, nid, seek, changed := "", int(ts.Curr), int(ts.Next), 0, false
+	// Replace characters based on regional features.
+	cid, nid, offset, changed := int(ts.Curr), int(ts.Next), 0, false
+
 	switch {
-	case cid < 1028 && cid > 1169: // not ukrainian
-		return result, seek, changed
+	case cid < 1028 && cid > 1169: // there are no rules for replacement
+		return result, offset, changed
 	case cid == 1047 && (nid == 1043 || nid == 1075): // ЗГ || Зг
 		changed = true
 		result = "Zgh"
-		seek = 1
+		offset = 1
 	case cid == 1079 && (nid == 1043 || nid == 1075): // зГ || зг
 		changed = true
 		result = "zgh"
-		seek = 1
+		offset = 1
 	case cid == 1059 && (nid == 1049 || nid == 1081): // УЙ || Уй
 		changed = true
 		result = "Uy"
-		seek = 1
+		offset = 1
 	case cid == 1091 && (nid == 1049 || nid == 1081): // уЙ || уй
 		changed = true
 		result = "uy"
-		seek = 1
+		offset = 1
 	default:
 		if v, ok := ukrainian[cid]; ok {
 			if !ts.IsBegin {
@@ -78,5 +84,5 @@ func ukRules(ts TransState) (string, int, bool) {
 		}
 	}
 
-	return result, seek, changed
+	return result, offset, changed
 }

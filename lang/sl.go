@@ -8,11 +8,11 @@ var slovenian = map[int]string{
 
 // The slRules implements the rules of transliteration into Slovenian.
 func slRules(ts TransState) (string, int, bool) {
-	result, id, seek, changed := "", int(ts.Curr), 0, false
+	result, id, offset, changed := "", int(ts.Curr), 0, false
 	if v, ok := slovenian[id]; ok {
 		result = v
 		changed = true
 	}
 
-	return result, seek, changed
+	return result, offset, changed
 }
