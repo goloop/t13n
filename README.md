@@ -3,7 +3,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/goloop/t13n)](https://goreportcard.com/report/github.com/goloop/t13n) [![License](https://img.shields.io/badge/license-BSD-blue)](https://github.com/goloop/t13n/blob/master/LICENSE) [![License](https://img.shields.io/badge/godoc-YES-green)](https://godoc.org/github.com/goloop/t13n)
 
-*Version: v1.2.1*
+*Version: v1.2.2*
 
 # t13n
 
@@ -102,8 +102,9 @@ func main() {
 
 	fmt.Printf("%s%s%s\n", y, o, r)
 
-    // Output: ior
-	// Output: yor
+    // Output: 
+    //  ior
+	//  yor
 }
 ```
 
@@ -243,9 +244,9 @@ func main() {
 
 The transliteration of the line is done by dividing the line into several parts and performing their transliteration in separate goroutines.
 
-By default, the number of threads is set as the number of CPU cores. But you can specify the number of threads by changing the value of the ParallelTasks global variable.
+By default, the number of threads is set as one. But you can set the number of threads use `Together` method.
 
-Strings shorter than 256 characters are transliterated in one stream regardless of ParallelTasks settings.
+Strings shorter than 256 characters are transliterated in one stream regardless of Together settings.
 
 ```go
 package main
