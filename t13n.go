@@ -7,26 +7,29 @@ import (
 )
 
 var (
-	// ParallelTasks the number of parallel transliteration tasks.
+	// The parallelTasks the number of parallel transliteration tasks.
 	// By default, the number of threads is set as the number of CPU cores.
-	ParallelTasks = 1
+	parallelTasks = 1
 
 	// The minimum number of characters to parallelize the transliteration.
 	singleThreadedLen = 256
 )
 
-// Module initialization.
-func init() {
-	ParallelTasks = runtime.NumCPU()
-}
+// // Module initialization.
+// func init() {
+// 	ParallelTasks = runtime.NumCPU()
+// }
 
 // New retursn pointer to T13n.
-func New() *T13n {
-	return &T13n{
+func New(l string) *T13n {
+	t := &T13n{
 		lang: lang.None,
 		ctr:  nil,
-		pt:   ParallelTasks,
+		pt:   1,
 	}
+
+	t.Lang(l)
+	return t
 }
 
 // T13n the transliteration constructor.
@@ -50,19 +53,20 @@ func (t *T13n) Make(text string) string {
 }
 
 // Rules establishes a custom extensions method of language rules.
-func (t *T13n) Rules(ctr lang.TransRules) *T13n {
+func (t *T13n) Rules(ctr lang.TransRules) {
 	t.ctr = ctr
-	return t
 }
 
 // Lang sets the type of language features to use during transliteration.
-func (t *T13n) Lang(l string) *T13n {
+func (t *T13n) Lang(l string) {
 	t.lang = l
-	return t
 }
 
-// ParallelTasks sets the number of parallel transliteration tasks.
-func (t *T13n) ParallelTasks(pt int) *T13n {
-	t.pt = pt
-	return t
+// Together sets the number of parallel transliteration tasks.
+func (t *T13n) Together(pt int) int {
+	if pt > 0 && pt < runtime.NumCPU()*3 {
+		t.pt = pt
+	}
+
+	return t.pt
 }

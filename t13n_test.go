@@ -18,7 +18,9 @@ func TestNew(t *testing.T) {
 		return "", 0, false
 	}
 
-	trans := New().Rules(ctr).Lang(lang.UK).ParallelTasks(1)
+	trans := New(lang.UK)
+	trans.Rules(ctr)
+	trans.Together(1)
 	if v := trans.Make("Доброго вечора, ми з України!"); v != expected {
 		t.Errorf("expected %s but %s", expected, v)
 	}

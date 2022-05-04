@@ -3,7 +3,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/goloop/t13n)](https://goreportcard.com/report/github.com/goloop/t13n) [![License](https://img.shields.io/badge/license-BSD-blue)](https://github.com/goloop/t13n/blob/master/LICENSE) [![License](https://img.shields.io/badge/godoc-YES-green)](https://godoc.org/github.com/goloop/t13n)
 
-*Version: v1.1.0*
+*Version: v1.2.1*
 
 # t13n
 
@@ -46,7 +46,8 @@ import (
 func main() {
 	// Original Lao and Japanese.
 	fmt.Println(t13n.Make("ເຮືອຮົບລັດເຊຍໄປ くそ ຕົວທ່ານເອງ!"))
-	// Output: eyy`obldesnyaip kuso howthaane`ng!
+
+	// Output: eyy`obldesnyaip Ku So howthaane`ng!
 }
 ```
 
@@ -65,11 +66,11 @@ import (
 
 func main() {
 	// Converts a unicode character to an ASCII string.
-    // Without the use of linguistic regional properties.
+	// Without the use of linguistic regional properties.
 	shi, jie := t13n.String('世'), t13n.String('界')
 	fmt.Printf("Hello %s%s\n", shi, jie)
 
-	// Output: Hello shijie
+	// Output: Hello Shi Jie
 }
 ```
 
@@ -263,14 +264,14 @@ func main() {
     ` // very long text here, 254101 characters.
 
 	// Single-threaded.
-	t13n.ParallelTasks = 1
+	t13n.Together(1)
 
 	start := time.Now()
 	str := t13n.Trans(lang.UK, text)
 	t1 := time.Since(start)
 
 	// Multithreaded.
-	t13n.ParallelTasks = 12
+	t13n.Together(12)
 
 	start = time.Now()
 	_ = t13n.Trans(lang.UK, text)
@@ -284,7 +285,7 @@ func main() {
 	//   Single-threaded:
 	//   Length: 254101
 	//   Time: 4.327649979s
-	//   
+	//
 	//   Multithreaded:
 	//   Length: 254101
 	//   Time: 372.701373ms
@@ -314,14 +315,13 @@ func main() {
         Воно було і є скотина.
     `
 
-	uk := t13n.New()
-	uk.Lang(lang.UK)
-	uk.ParallelTasks(12) // multithreaded
+	uk := t13n.New(lang.UK)
+	uk.Together(12) // multithreaded
 	// uk := t13n.New().Lang(lang.UK).ParallelTasks(12)
 
-	sl := t13n.New()
+	sl := t13n.New("")
 	sl.Lang(lang.SL)
-	sl.ParallelTasks(1) // single-threaded
+	sl.Together(1) // single-threaded
 	// sl := t13n.New().Lang(lang.SL).ParallelTasks(1)
 
 	// Print result.
@@ -343,59 +343,68 @@ func main() {
 
 ## Usage
 
-    var ParallelTasks = 1
-
-ParallelTasks the number of parallel transliteration tasks.
-
 #### func  Make
 
     func Make(t string) string
 
-Make converts a unicode string to an ASCII string.
+Make transliterates a unicode string to an ASCII string, it's doesn't take into
+account regional linguistic features of transliteration.
 
 #### func  Render
 
     func Render(l, t string, ctr lang.TransRules) (result string)
 
-Render converts a unicode string to an ASCII string with the rules of the
-selected language and with custom rules.
+Render transliterates a Unicode string into an ASCII string with taking into
+account regional linguistic features of the transliteration depending from the
+language.
+
+The third parameter can specify the function of custom transliteration rules or
+nil.
 
 #### func  String
 
     func String(c rune) string
 
-String returns string value by rune from the main dictionary.
+String returns string value by rune from the main lib, it's doesn't take into
+account regional linguistic features of transliteration.
+
+#### func  Together
+
+    func Together(pt int) int
+
+Together sets the number of parallel transliteration tasks.
 
 #### func  Trans
 
     func Trans(l, t string) string
 
-Trans converts a unicode string to an ASCII string with the rules of the
-selected language.
+Trans transliterates a Unicode string into an ASCII string with taking into
+account regional linguistic features of the transliteration depending from the
+language.
 
 #### func  Version
 
     func Version() string
 
-Version returns the version of the module.
+Version returns the version of the module it's has a format
+"v{major_version}.{minor_version}.{patch_version}".
 
 #### type T13n
 
-    type T13n struct {
-    }
+    type T13n struct {}
 
 
-T13n the t13n constructor.
+T13n the transliteration constructor.
 
 #### func  New
 
-    func New() *T13n
+    func New(l string) *T13n
 
 New retursn pointer to T13n.
 
 #### func (*T13n) Lang
 
-    func (t *T13n) Lang(l string) *T13n
+    func (t *T13n) Lang(l string)
 
 Lang sets the type of language features to use during transliteration.
 
@@ -403,17 +412,17 @@ Lang sets the type of language features to use during transliteration.
 
     func (t *T13n) Make(text string) string
 
-Make converts a unicode string to an ASCII string with the rules of the selected
-language.
-
-#### func (*T13n) ParallelTasks
-
-    func (t *T13n) ParallelTasks(pt int) *T13n
-
-ParallelTasks sets the number of parallel transliteration tasks.
+Make transliterates a unicode string to an ASCII string. This method takes into
+account the selected language and apply regional transliteration settings.
 
 #### func (*T13n) Rules
 
-    func (t *T13n) Rules(ctr lang.TransRules) *T13n
+    func (t *T13n) Rules(ctr lang.TransRules)
 
 Rules establishes a custom extensions method of language rules.
+
+#### func (*T13n) Together
+
+    func (t *T13n) Together(pt int) int
+
+Together sets the number of parallel transliteration tasks.

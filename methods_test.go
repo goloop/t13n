@@ -1,6 +1,7 @@
 package t13n
 
 import (
+	"runtime"
 	"strings"
 	"testing"
 
@@ -61,6 +62,7 @@ func TestMake(t *testing.T) {
 		{"こんにちは、みんな", "Ko N Ni Chi Ha Mi N Na"},
 	}
 
+	Together(1)
 	singleThreadedLen = 0
 	for _, test := range tests {
 		if v := Make(test.value); v != test.expected {
@@ -118,6 +120,7 @@ func TestRenderSlug(t *testing.T) {
 		return strings.ToLower(ts.Value), 0, true
 	}
 
+	Together(runtime.NumCPU())
 	for _, test := range tests {
 		if v := Render(lang.None, test.value, slug); v != test.expected {
 			t.Errorf("expected %s but %s", test.expected, v)
