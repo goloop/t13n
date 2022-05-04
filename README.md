@@ -7,8 +7,7 @@
 
 # t13n
 
-Package t13n (transliteration) implements methods for converting text in unicode
-format to ASCII format.
+Package t13n (transliteration) implements methods for converting text in unicode format to ASCII format.
 
 
 ## Installation
