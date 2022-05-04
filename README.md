@@ -7,8 +7,8 @@
 
 # t13n
 
-
-Package t13n (transliteration) implements methods for converting Unicode text to ASCII.
+Package t13n (transliteration) implements methods for converting Unicode text to
+ASCII.
 
 
 ## Installation
@@ -391,7 +391,8 @@ Version returns the version of the module it's has a format
 
 #### type T13n
 
-    type T13n struct {}
+    type T13n struct {
+    }
 
 
 T13n the transliteration constructor.
