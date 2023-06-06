@@ -343,7 +343,7 @@ func main() {
 
   Make transliterates a unicode string to an ASCII string, it's doesn't take into account regional linguistic features of transliteration.
 
--- **Render**(l, t string, ctr lang.TransRules) (result string)
+- **Render**(l, t string, ctr lang.TransRules) (result string)
 
   Render transliterates a Unicode string into an ASCII string with taking into account regional linguistic features of the transliteration depending from the language.
 
