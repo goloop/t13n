@@ -1,14 +1,9 @@
-[//]: # (!!!Don't modify the README.md, use `make readme` to generate it!!!)
+[![Go Report Card](https://goreportcard.com/badge/github.com/goloop/t13n)](https://goreportcard.com/report/github.com/goloop/t13n) [![License](https://img.shields.io/badge/license-MIT-brightgreen)](https://github.com/goloop/t13n/blob/master/LICENSE) [![License](https://img.shields.io/badge/godoc-YES-green)](https://godoc.org/github.com/goloop/t13n)
 
-
-[![Go Report Card](https://goreportcard.com/badge/github.com/goloop/t13n)](https://goreportcard.com/report/github.com/goloop/t13n) [![License](https://img.shields.io/badge/license-BSD-blue)](https://github.com/goloop/t13n/blob/master/LICENSE) [![License](https://img.shields.io/badge/godoc-YES-green)](https://godoc.org/github.com/goloop/t13n)
-
-*Version: v1.2.2*
 
 # t13n
 
-Package t13n (transliteration) implements methods for converting Unicode text to
-ASCII.
+Package t13n (transliteration) implements methods for converting Unicode text to ASCII.
 
 
 ## Installation
@@ -24,10 +19,10 @@ $ go get -u github.com/goloop/t13n
 Import t13n into your code as
 
 ```go
-import "github.com/goloop/t13n" 
+import "github.com/goloop/t13n"
 ```
 
-You can use fast transliteration functions or create a conversion object of t13n.T13n type. 
+You can use fast transliteration functions or create a conversion object of t13n.T13n type.
 
 
 ### Conversion functions
@@ -102,7 +97,7 @@ func main() {
 
 	fmt.Printf("%s%s%s\n", y, o, r)
 
-    // Output: 
+    // Output:
     //  ior
 	//  yor
 }
@@ -342,89 +337,53 @@ func main() {
 }
 ```
 
-## Usage
+## Functions
 
-#### func  Make
+- **Make**(t string) string
 
-    func Make(t string) string
+  Make transliterates a unicode string to an ASCII string, it's doesn't take into account regional linguistic features of transliteration.
 
-Make transliterates a unicode string to an ASCII string, it's doesn't take into
-account regional linguistic features of transliteration.
+-- **Render**(l, t string, ctr lang.TransRules) (result string)
 
-#### func  Render
+  Render transliterates a Unicode string into an ASCII string with taking into account regional linguistic features of the transliteration depending from the language.
 
-    func Render(l, t string, ctr lang.TransRules) (result string)
+  The third parameter can specify the function of custom transliteration rules or nil.
 
-Render transliterates a Unicode string into an ASCII string with taking into
-account regional linguistic features of the transliteration depending from the
-language.
+- **String**(c rune) string
 
-The third parameter can specify the function of custom transliteration rules or
-nil.
+  String returns string value by rune from the main lib, it's doesn't take into account regional linguistic features of transliteration.
 
-#### func  String
+- **Together**(pt int) int
 
-    func String(c rune) string
+  Together sets the number of parallel transliteration tasks.
 
-String returns string value by rune from the main lib, it's doesn't take into
-account regional linguistic features of transliteration.
+- **Trans**(l, t string) string
 
-#### func  Together
+  Trans transliterates a Unicode string into an ASCII string with taking into account regional linguistic features of the transliteration depending from the language.
 
-    func Together(pt int) int
+- **Version**() string
 
-Together sets the number of parallel transliteration tasks.
+  Version returns the version of the module it's has a format `"v{major_version}.{minor_version}.{patch_version}"`.
 
-#### func  Trans
+- **New**(l string) *T13n
 
-    func Trans(l, t string) string
-
-Trans transliterates a Unicode string into an ASCII string with taking into
-account regional linguistic features of the transliteration depending from the
-language.
-
-#### func  Version
-
-    func Version() string
-
-Version returns the version of the module it's has a format
-"v{major_version}.{minor_version}.{patch_version}".
-
-#### type T13n
-
-    type T13n struct {
-    }
+  New retursn pointer to T13n.
 
 
-T13n the transliteration constructor.
+## Method of T13n object
 
-#### func  New
+- **Lang**(l string)
 
-    func New(l string) *T13n
+  Lang sets the type of language features to use during transliteration.
 
-New retursn pointer to T13n.
+- **Make**(text string) string
 
-#### func (*T13n) Lang
+  Make transliterates a unicode string to an ASCII string. This method takes into account the selected language and apply regional transliteration settings.
 
-    func (t *T13n) Lang(l string)
+- **Rules**(ctr lang.TransRules)
 
-Lang sets the type of language features to use during transliteration.
+  Rules establishes a custom extensions method of language rules.
 
-#### func (*T13n) Make
+- **Together**(pt int) int
 
-    func (t *T13n) Make(text string) string
-
-Make transliterates a unicode string to an ASCII string. This method takes into
-account the selected language and apply regional transliteration settings.
-
-#### func (*T13n) Rules
-
-    func (t *T13n) Rules(ctr lang.TransRules)
-
-Rules establishes a custom extensions method of language rules.
-
-#### func (*T13n) Together
-
-    func (t *T13n) Together(pt int) int
-
-Together sets the number of parallel transliteration tasks.
+  Together sets the number of parallel transliteration tasks.
