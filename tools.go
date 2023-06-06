@@ -23,7 +23,7 @@ type transChunkState struct {
 func isDelimiter(c rune) bool {
 	// Separator ranges.
 	// Important: edit maps ascending order only!
-	var separators = [][]int{
+	separators := [][]int{
 		{9, 9},
 		{32, 64},
 		{91, 96},
@@ -55,7 +55,7 @@ func isDelimiter(c rune) bool {
 // The isHieroglyph returns true if char is hieroglyph.
 func isHieroglyph(c rune) bool {
 	// It's unicode.Han and unicode.Hiragana.
-	var hieroglyphs = [][]int{
+	hieroglyphs := [][]int{
 		{11904, 11929},
 		{11931, 12019},
 		{12032, 12245},
@@ -162,19 +162,20 @@ func toChunks(chars []rune, n int) ([][]rune, int) {
 
 // The renderChunk renders one chunk, launches as a separate goroutine.
 // Where is:
-//  id - chunk sequence number (starts from zero);
-//  chars - slice of characters to transliteration;
-//  prevOver - previous character before the first character
-//      in the current chunk (the last character in the previous chunk);
-//  nextOver - next character after the last character
-//      in the current chunk (taken as the first character in the next chunk);
-//  isBegin - true if before the first character in the chunk
-//      was a separator (is determined outside the goroutine,
-//      as the separator is not always a divider, such as an apostrophe);
-//  prevIsUpper - true if prev char was is upper;
-//  ltr - language translation rules;
-//  ctr - custom translation rules;
-//  ch - the result of the function.
+//
+//	id - chunk sequence number (starts from zero);
+//	chars - slice of characters to transliteration;
+//	prevOver - previous character before the first character
+//	    in the current chunk (the last character in the previous chunk);
+//	nextOver - next character after the last character
+//	    in the current chunk (taken as the first character in the next chunk);
+//	isBegin - true if before the first character in the chunk
+//	    was a separator (is determined outside the goroutine,
+//	    as the separator is not always a divider, such as an apostrophe);
+//	prevIsUpper - true if prev char was is upper;
+//	ltr - language translation rules;
+//	ctr - custom translation rules;
+//	ch - the result of the function.
 func renderChunk(
 	id int,
 	chars []rune,
@@ -269,10 +270,11 @@ func renderChunk(
 // the rules of the selected language and with custom rules.
 //
 // Where is:
-//  l - language code;
-//  t - text to conversion;
-//  ctr - custom translation rules;
-//  nt - number of threads.
+//
+//	l - language code;
+//	t - text to conversion;
+//	ctr - custom translation rules;
+//	nt - number of threads.
 func renderString(l, t string, ctr lang.TransRules, nt int) string {
 	var result string
 

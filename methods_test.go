@@ -35,7 +35,7 @@ func TestToStr(t *testing.T) {
 
 // TestMake tests Make function.
 func TestMake(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value    string
 		expected string
 	}{
@@ -69,12 +69,11 @@ func TestMake(t *testing.T) {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
-
 }
 
 // TestRenderSlug tests Render function with custom rules as slug generator.
 func TestRenderSlug(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value    string
 		expected string
 	}{
@@ -126,12 +125,11 @@ func TestRenderSlug(t *testing.T) {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
-
 }
 
 // TestBosnian tests Trans function for Bosnian language.
 func TestBosnian(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value    string
 		expected string
 	}{
@@ -164,12 +162,11 @@ func TestBosnian(t *testing.T) {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
-
 }
 
 // TestBulgarian tests Trans function for Bulgarian language.
 func TestBulgarian(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value    string
 		expected string
 	}{
@@ -184,12 +181,11 @@ func TestBulgarian(t *testing.T) {
 			t.Errorf("expected %s but %s", test.expected, v)
 		}
 	}
-
 }
 
 // TestCatalan tests Trans function for Catalan language.
 func TestCatalan(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value    string
 		expected string
 	}{
@@ -208,7 +204,7 @@ func TestCatalan(t *testing.T) {
 
 // TestCroatian tests Trans function for Croatian language.
 func TestCroatian(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value    string
 		expected string
 	}{
@@ -225,7 +221,7 @@ func TestCroatian(t *testing.T) {
 
 // TestDanish tests Trans function for Danish language.
 func TestDanish(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value    string
 		expected string
 	}{
@@ -241,7 +237,7 @@ func TestDanish(t *testing.T) {
 
 // TestEsperanto tests Render function for Esperanto language.
 func TestEsperanto(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value    string
 		expected string
 	}{
@@ -258,7 +254,7 @@ func TestEsperanto(t *testing.T) {
 
 // TestGerman tests Render function for German language.
 func TestGerman(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value    string
 		expected string
 	}{
@@ -275,7 +271,7 @@ func TestGerman(t *testing.T) {
 
 // TestHungarian tests Render function for Hungarian language.
 func TestHungarian(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value    string
 		expected string
 	}{
@@ -292,7 +288,7 @@ func TestHungarian(t *testing.T) {
 
 // TestMacedonian tests Render function for Macedonian language.
 func TestMacedonian(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value    string
 		expected string
 	}{
@@ -309,7 +305,7 @@ func TestMacedonian(t *testing.T) {
 
 // TestNorwegian tests Render function for Norwegian language.
 func TestNorwegian(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value    string
 		expected string
 	}{
@@ -326,7 +322,7 @@ func TestNorwegian(t *testing.T) {
 
 // TestRussian tests Render function for Russian language.
 func TestRussian(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value    string
 		expected string
 	}{
@@ -344,7 +340,7 @@ func TestRussian(t *testing.T) {
 
 // TestSerbian tests Render function for Serbian language.
 func TestSerbian(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value    string
 		expected string
 	}{
@@ -360,7 +356,7 @@ func TestSerbian(t *testing.T) {
 
 // TestSlovenian tests Render function for Slovenian language.
 func TestSlovenian(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value    string
 		expected string
 	}{
@@ -384,7 +380,7 @@ func TestSlovenian(t *testing.T) {
 
 // TestSwedish tests Render function for Swedish language.
 func TestSwedish(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value    string
 		expected string
 	}{
@@ -401,7 +397,7 @@ func TestSwedish(t *testing.T) {
 
 // TestUkrainian tests Render function for Ukrainian language.
 func TestUkrainian(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value    string
 		expected string
 	}{

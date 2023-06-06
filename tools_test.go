@@ -8,7 +8,7 @@ import (
 
 // TestIsCharDelimiter tests isCharDelimiter function.
 func TestIsCharDelimiter(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value string
 		total int
 	}{
@@ -43,7 +43,7 @@ func TestIsCharDelimiter(t *testing.T) {
 
 // TestIsApostrophe tests isApostrophe function.
 func TestIsApostrophe(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value string
 		total int
 	}{
@@ -84,7 +84,7 @@ func TestIsApostrophe(t *testing.T) {
 
 // TestToChunks tests toChunks function.
 func TestToChunks(t *testing.T) {
-	var tests = []struct {
+	tests := []struct {
 		value []rune
 		nproc int
 		total int

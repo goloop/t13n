@@ -8,7 +8,7 @@ import (
 
 // TestNew tests New function.
 func TestNew(t *testing.T) {
-	var expected = "Dobroho vechora, mu z Ukrainu!"
+	expected := "Dobroho vechora, mu z Ukrainu!"
 
 	ctr := func(ts lang.TransState) (string, int, bool) {
 		if ts.Value == "y" {
