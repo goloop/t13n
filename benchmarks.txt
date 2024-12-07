@@ -1,0 +1,16 @@
+goos: linux
+goarch: arm64
+pkg: github.com/goloop/t13n
+BenchmarkString-6                  	1000000000	         0.3882 ns/op	       0 B/op	       0 allocs/op
+BenchmarkMake_Short-6              	  145332	      7880 ns/op	    1384 B/op	      43 allocs/op
+BenchmarkMake_Medium-6             	   48618	     24948 ns/op	    7552 B/op	     208 allocs/op
+BenchmarkMake_Long-6               	     184	   6530240 ns/op	34259823 B/op	   18722 allocs/op
+BenchmarkTrans_UK_Short-6          	   56631	     20585 ns/op	   13142 B/op	      71 allocs/op
+BenchmarkTrans_UK_Medium-6         	   15478	     73607 ns/op	   85878 B/op	     396 allocs/op
+BenchmarkTrans_UK_Long-6           	     100	  10150872 ns/op	41477880 B/op	   37679 allocs/op
+BenchmarkParallel_SingleThread-6   	      25	  52179435 ns/op	206741146 B/op	   37685 allocs/op
+BenchmarkParallel_MultiThread-6    	     151	   7653794 ns/op	24908340 B/op	   37697 allocs/op
+BenchmarkT13n_SingleThread-6       	      22	  54292013 ns/op	206739637 B/op	   37678 allocs/op
+BenchmarkT13n_MultiThread-6        	     151	   8047628 ns/op	24907971 B/op	   37696 allocs/op
+PASS
+ok  	github.com/goloop/t13n	15.892s
