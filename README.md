@@ -3,15 +3,15 @@
 
 # t13n
 
-Package t13n (transliteration) implements methods for converting Unicode text to ASCII.
+Package t13n (transliteration) implements efficient methods for converting Unicode text to ASCII.
 
 
 ## Installation
 
-Use go get to install this module.:
+Use go get to install the module:
 
-```
-$ go get -u github.com/goloop/t13n
+```bash
+go get -u github.com/goloop/t13n
 ```
 
 ## Quick Start
@@ -102,8 +102,6 @@ func main() {
 	//  yor
 }
 ```
-
-
 
 #### Transliterate unicode string to ASCII string.
 
@@ -387,3 +385,11 @@ func main() {
 - **Together**(pt int) int
 
   Together sets the number of parallel transliteration tasks.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
