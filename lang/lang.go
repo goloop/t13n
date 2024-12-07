@@ -5,6 +5,10 @@ import "strings"
 const (
 	// None to ignore any language rules.
 	None = ""
+	// GB is British English language.
+	GB = "gb"
+	// US is American English language.
+	US = "us"
 	// BG is Bulgarian language.
 	BG = "bg"
 	// HR is Croatian language.
