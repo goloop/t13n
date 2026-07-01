@@ -3,7 +3,7 @@ package t13n
 import (
 	"testing"
 
-	"github.com/goloop/t13n/lang"
+	"github.com/goloop/t13n/v2/lang"
 )
 
 var (
@@ -14,7 +14,7 @@ var (
 		небо блакитне - не сіре, а сонце жовте - не чорне.
 		こんばんは, ми з України!
 	`
-	// Simulate a very long text by repeating medium text
+	// Simulate a very long text by repeating the medium text.
 	longText = func() string {
 		result := ""
 		for i := 0; i < 100; i++ {
@@ -24,7 +24,6 @@ var (
 	}()
 )
 
-// Simple conversion benchmarks
 func BenchmarkString(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		String('世')
@@ -49,7 +48,6 @@ func BenchmarkMake_Long(b *testing.B) {
 	}
 }
 
-// Language-specific conversion benchmarks
 func BenchmarkTrans_UK_Short(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		Trans(lang.UK, shortText)
@@ -68,38 +66,10 @@ func BenchmarkTrans_UK_Long(b *testing.B) {
 	}
 }
 
-// Parallel processing benchmarks
-func BenchmarkParallel_SingleThread(b *testing.B) {
-	Together(1)
+func BenchmarkT13n_Long(b *testing.B) {
+	tr := New(WithLang(lang.UK))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		Trans(lang.UK, longText)
-	}
-}
-
-func BenchmarkParallel_MultiThread(b *testing.B) {
-	Together(12)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		Trans(lang.UK, longText)
-	}
-}
-
-// Object-oriented usage benchmarks
-func BenchmarkT13n_SingleThread(b *testing.B) {
-	t := New(lang.UK)
-	t.Together(1)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		t.Make(longText)
-	}
-}
-
-func BenchmarkT13n_MultiThread(b *testing.B) {
-	t := New(lang.UK)
-	t.Together(12)
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		t.Make(longText)
+		tr.Make(longText)
 	}
 }

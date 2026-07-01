@@ -1,72 +1,62 @@
 package t13n
 
-import (
-	"runtime"
+import "github.com/goloop/t13n/v2/lang"
 
-	"github.com/goloop/t13n/lang"
-)
+// T13n is a reusable transliterator configured with a language and, optionally,
+// a custom rule function. A configured T13n is safe for concurrent use by
+// multiple goroutines; the configuration methods ([T13n.Lang], [T13n.Rules])
+// are meant to be called during setup, before the value is shared.
+type T13n struct {
+	// lang is the language code whose regional rules are applied.
+	lang string
 
-var (
-	// The parallelTasks the number of parallel transliteration tasks.
-	// By default, the number of threads is set as the number of CPU cores.
-	parallelTasks = 1
+	// rules is an optional custom rule function applied after the
+	// language rules.
+	rules lang.TransRules
+}
 
-	// The minimum number of characters to parallelize the transliteration.
-	singleThreadedLen = 256
-)
+// Option configures a [T13n] created with [New].
+type Option func(*T13n)
 
-// // Module initialization.
-// func init() {
-// 	ParallelTasks = runtime.NumCPU()
-// }
+// WithLang sets the language whose regional rules are applied during
+// transliteration (see the lang package for language codes).
+func WithLang(l string) Option {
+	return func(t *T13n) { t.lang = l }
+}
 
-// New retursn pointer to T13n.
-func New(l string) *T13n {
-	t := &T13n{
-		lang: lang.None,
-		ctr:  nil,
-		pt:   1,
+// WithRules sets a custom rule function applied after the language rules,
+// for example to build slugs.
+func WithRules(r lang.TransRules) Option {
+	return func(t *T13n) { t.rules = r }
+}
+
+// New returns a transliterator configured by the given options. With no
+// options it transliterates without regional rules, exactly like [Make].
+func New(opts ...Option) *T13n {
+	t := &T13n{lang: lang.None}
+	for _, opt := range opts {
+		opt(t)
 	}
 
-	t.Lang(l)
 	return t
 }
 
-// T13n the transliteration constructor.
-type T13n struct {
-	// Language code whose regional rules are
-	// to be used during transliteration.
-	lang string
-
-	// Custom translation rules.
-	ctr lang.TransRules
-
-	// Number of parallel transliteration tasks.
-	pt int
-}
-
-// Make transliterates a unicode string to an ASCII string.
-// This method takes into account the selected language and
-// apply regional transliteration settings.
+// Make transliterates a Unicode string to ASCII using the configured
+// language and custom rules.
 func (t *T13n) Make(text string) string {
-	return renderString(t.lang, text, t.ctr, t.pt)
+	return render(t.lang, text, t.rules)
 }
 
-// Rules establishes a custom extensions method of language rules.
-func (t *T13n) Rules(ctr lang.TransRules) {
-	t.ctr = ctr
-}
-
-// Lang sets the type of language features to use during transliteration.
-func (t *T13n) Lang(l string) {
+// Lang sets the language whose regional rules are applied and returns the
+// receiver, so calls can be chained.
+func (t *T13n) Lang(l string) *T13n {
 	t.lang = l
+	return t
 }
 
-// Together sets the number of parallel transliteration tasks.
-func (t *T13n) Together(pt int) int {
-	if pt > 0 && pt < runtime.NumCPU()*3 {
-		t.pt = pt
-	}
-
-	return t.pt
+// Rules sets a custom rule function applied after the language rules and
+// returns the receiver, so calls can be chained.
+func (t *T13n) Rules(r lang.TransRules) *T13n {
+	t.rules = r
+	return t
 }

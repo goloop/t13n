@@ -19,13 +19,5 @@ var macedonian = map[int]string{
 	1119: "dj", // 1119, U+045F, 'џ', "dzh"
 }
 
-// The mkRules implements the rules of transliteration into Macedonian.
-func mkRules(ts TransState) (string, int, bool) {
-	result, id, offset, changed := "", int(ts.Curr), 0, false
-	if v, ok := macedonian[id]; ok {
-		result = v
-		changed = true
-	}
-
-	return result, offset, changed
-}
+// mkRules implements the rules of transliteration.
+var mkRules = mapRules(macedonian)

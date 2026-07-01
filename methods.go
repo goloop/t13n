@@ -1,49 +1,58 @@
 package t13n
 
-import (
-	"runtime"
+import "github.com/goloop/t13n/v2/lang"
 
-	"github.com/goloop/t13n/lang"
-)
+// version is the module version, reported by Version.
+const version = "v2.0.0"
 
-// String returns string value by rune from the main lib, it's doesn't
-// take into account regional linguistic features of transliteration.
+// Version returns the module version in the form
+// "v{major}.{minor}.{patch}".
+func Version() string {
+	return version
+}
+
+// String returns the base ASCII transliteration of a single code point,
+// ignoring any regional linguistic rules. It returns an empty string when
+// the rune has no mapping (including runes outside the Basic Multilingual
+// Plane and negative runes); use [Rune] to tell "no mapping" apart from a
+// mapping that is intentionally empty.
 func String(c rune) string {
-	if id := int(c); id < len(lib) {
-		return lib[id]
+	if id := int(c); id >= 0 && id < tableSize {
+		return table()[id]
 	}
 
 	return ""
 }
 
-// Make transliterates a unicode string to an ASCII string, it's doesn't
-// take into account regional linguistic features of transliteration.
-func Make(t string) string {
-	return Render(lang.None, t, nil)
-}
-
-// Trans transliterates a Unicode string into an ASCII string
-// with taking into account regional linguistic features of
-// the transliteration depending from the language.
-func Trans(l, t string) string {
-	return Render(l, t, nil)
-}
-
-// Render transliterates a Unicode string into an ASCII string
-// with taking into account regional linguistic features of
-// the transliteration depending from the language.
-//
-// The third parameter can specify the function of
-// custom transliteration rules or nil.
-func Render(l, t string, ctr lang.TransRules) (result string) {
-	return renderString(l, t, ctr, parallelTasks)
-}
-
-// Together sets the number of parallel transliteration tasks.
-func Together(pt int) int {
-	if pt > 0 && pt < runtime.NumCPU()*3 {
-		parallelTasks = pt
+// Rune returns the base ASCII transliteration of a single code point and
+// reports whether a mapping exists. ok is false for runes outside the table
+// (negative or above U+FFFD) and for code points with no replacement, which
+// lets callers detect characters that would otherwise silently vanish.
+func Rune(c rune) (string, bool) {
+	if id := int(c); id >= 0 && id < tableSize {
+		if s := table()[id]; s != "" {
+			return s, true
+		}
 	}
 
-	return parallelTasks
+	return "", false
+}
+
+// Make transliterates a Unicode string to ASCII without applying any
+// regional linguistic rules.
+func Make(text string) string {
+	return render(lang.None, text, nil)
+}
+
+// Trans transliterates a Unicode string to ASCII, applying the regional
+// rules of the given language (see the lang package for language codes).
+func Trans(l, text string) string {
+	return render(l, text, nil)
+}
+
+// Render transliterates a Unicode string to ASCII, applying the regional
+// rules of the given language and, when ctr is non-nil, a custom rule
+// function applied last (for example, to build slugs).
+func Render(l, text string, ctr lang.TransRules) string {
+	return render(l, text, ctr)
 }

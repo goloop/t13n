@@ -1,4 +1,4 @@
-package t13n
+package main
 
 // The lib array contains strings of relationships to certain
 // unicode characters. The ordinal number of the element in

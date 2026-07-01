@@ -1,42 +1,44 @@
-// Package t13n implements methods for converting Unicode text
-// to ASCII (transliteration).
+// Package t13n converts Unicode text to ASCII (transliteration).
 //
-// The package provides both simple conversion functions and an
-// object-oriented interface for transliterating text. It supports
-// language-specific transliteration rules and custom transliteration
-// extensions.
+// It provides simple package-level functions and a reusable, configurable
+// transliterator. Transliteration is driven by a base table covering the
+// Basic Multilingual Plane and, optionally, language-specific rules and a
+// custom rule function.
 //
 // Basic usage:
 //
-//	// Simple conversion.
-//	ascii := t13n.Make("こんにちは")
+//	// Plain transliteration, no regional rules.
+//	ascii := t13n.Make("こんにちは") // "Ko N Ni Chi Ha"
 //
-//	// Language-specific conversion.
-//	ukText := t13n.Trans(lang.UK, "Доброго вечора")
+//	// Language-specific transliteration.
+//	uk := t13n.Trans(lang.UK, "Доброго вечора") // "Dobroho vechora"
 //
-//	// Object-oriented usage with custom settings.
-//	t := t13n.New(lang.UK)
-//	t.Together(12) // enable parallel processing
-//	result := t.Make("Доброго вечора")
+//	// A reusable transliterator configured with functional options.
+//	tr := t13n.New(t13n.WithLang(lang.UK))
+//	result := tr.Make("Доброго вечора")
 //
-// Features:
-//   - Single character and string transliteration.
-//   - Language-specific conversion rules.
-//   - Custom transliteration rules support.
-//   - Parallel processing for large texts.
-//   - Object-oriented interface.
-//   - Preservation of case sensitivity.
-//   - Special handling for apostrophes and hieroglyphs.
+// A custom rule function runs after the language rules and can be used, for
+// example, to build slugs:
 //
-// The package automatically switches to parallel processing for texts longer
-// than 256 characters when parallel tasks are enabled. The number of parallel
-// tasks can be controlled using the Together() function or method.
+//	slug := func(ts lang.TransState) (string, int, bool) {
+//	    if ts.Value == " " {
+//	        return "-", 0, true
+//	    }
+//	    return strings.ToLower(ts.Value), 0, true
+//	}
+//	s := t13n.Render(lang.UK, "Доброго вечора", slug) // "dobroho-vechora"
 //
-// For language-specific transliteration, use the lang package constants:
-//   - lang.None - No language-specific rules
-//   - lang.UK - Ukrainian
-//   - lang.DE - German
-//   - lang.EN - English
+// Guarantees:
+//   - The output is always pure 7-bit ASCII.
+//   - Characters with no mapping (including code points outside the Basic
+//     Multilingual Plane) are dropped; use [Rune] to detect them.
+//   - No function panics on any input, including invalid UTF-8.
 //
-// The package is thread-safe and can be used concurrently.
+// For language-specific transliteration, use the constants in the lang package
+// (for example lang.UK, lang.DE, lang.RU).
+//
+// The package-level functions ([String], [Rune], [Make], [Trans], [Render])
+// are stateless and safe for concurrent use. A [T13n] value is safe for
+// concurrent use once configured; its setters are intended for setup before
+// the value is shared.
 package t13n

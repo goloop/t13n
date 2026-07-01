@@ -1,39 +1,20 @@
 package t13n
 
 import (
-	"runtime"
 	"strings"
 	"testing"
 
-	"github.com/goloop/t13n/lang"
+	"github.com/goloop/t13n/v2/lang"
 )
 
-// TestToStr tests ToStr function.
-func TestToStr(t *testing.T) {
-	// Overflow.
-	overflow := func() (result bool) {
-		// Testing an inaccessible index will cause panic!
-		defer func() {
-			if r := recover(); r != nil {
-				result = false
-				return
-			}
-		}()
-
-		a := String(rune(len(lib)))
-		if a != "" {
-			return
-		}
-
-		return true
-	}
-
-	if o := overflow(); !o {
-		t.Error("expected true but false")
+// TestVersion checks the version has the documented shape.
+func TestVersion(t *testing.T) {
+	if v := Version(); !strings.HasPrefix(v, "v2.") {
+		t.Errorf("unexpected version %q", v)
 	}
 }
 
-// TestMake tests Make function.
+// TestMake tests Make against a broad range of scripts.
 func TestMake(t *testing.T) {
 	tests := []struct {
 		value    string
@@ -62,16 +43,14 @@ func TestMake(t *testing.T) {
 		{"こんにちは、みんな", "Ko N Ni Chi Ha Mi N Na"},
 	}
 
-	Together(1)
-	singleThreadedLen = 0
 	for _, test := range tests {
 		if v := Make(test.value); v != test.expected {
-			t.Errorf("expected %s but %s", test.expected, v)
+			t.Errorf("Make(%q): got %q want %q", test.value, v, test.expected)
 		}
 	}
 }
 
-// TestRenderSlug tests Render function with custom rules as slug generator.
+// TestRenderSlug tests Render with a custom rule that turns text into a slug.
 func TestRenderSlug(t *testing.T) {
 	tests := []struct {
 		value    string
@@ -119,15 +98,16 @@ func TestRenderSlug(t *testing.T) {
 		return strings.ToLower(ts.Value), 0, true
 	}
 
-	Together(runtime.NumCPU())
 	for _, test := range tests {
 		if v := Render(lang.None, test.value, slug); v != test.expected {
-			t.Errorf("expected %s but %s", test.expected, v)
+			t.Errorf("Render(slug, %q): got %q want %q",
+				test.value, v, test.expected)
 		}
 	}
 }
 
-// TestBosnian tests Trans function for Bosnian language.
+// TestBosnian tests Trans for Bosnian, which has no regional rules and so
+// relies purely on the base table.
 func TestBosnian(t *testing.T) {
 	tests := []struct {
 		value    string
@@ -138,7 +118,9 @@ func TestBosnian(t *testing.T) {
 		{"Goražde", "Gorazde"},
 		{"Široki Brijeg", "Siroki Brijeg"},
 		{"Živinice", "Zivinice"},
-		{"ЂЊЋŽĆČŠ", "DJNJTSHZCCS"},
+		// Adjacent uppercase multi-letter expansions stay title-cased so
+		// letter boundaries remain unambiguous ("DjNj", not "DJNJ").
+		{"ЂЊЋŽĆČŠ", "DjNjTshZCCS"},
 		{
 			"Ђ Е Ж З И Ј К Л Љ М Н Њ О П Р С Т Ћ У Ф Х Ц Ч Џ Ш",
 			"Dj E Zh Z I J K L Lj M N Nj O P R S T Tsh U F Kh Ts Ch Dzh Sh",
@@ -159,12 +141,14 @@ func TestBosnian(t *testing.T) {
 
 	for _, test := range tests {
 		if v := Trans(lang.BS, test.value); v != test.expected {
-			t.Errorf("expected %s but %s", test.expected, v)
+			t.Errorf("Trans(BS, %q): got %q want %q",
+				test.value, v, test.expected)
 		}
 	}
 }
 
-// TestBulgarian tests Trans function for Bulgarian language.
+// TestBulgarian tests Trans for Bulgarian, including the capital/small Я
+// mapping that used to be inverted.
 func TestBulgarian(t *testing.T) {
 	tests := []struct {
 		value    string
@@ -174,35 +158,30 @@ func TestBulgarian(t *testing.T) {
 		{"č ć é f ô š ž", "c c e f o s z"},
 		{"Ќ Ѣ Џ Њ Ъ", "Kj E Dzh Nj A"},
 		{"ќ ѣ џ њ ъ", "kj e dzh nj a"},
+		// Capital Я -> "Ya", small я -> "ya" (must not be swapped).
+		{"Я", "Ya"},
+		{"я", "ya"},
+		{"Яя", "Yaya"},
 	}
 
 	for _, test := range tests {
 		if v := Trans(lang.BG, test.value); v != test.expected {
-			t.Errorf("expected %s but %s", test.expected, v)
+			t.Errorf("Trans(BG, %q): got %q want %q",
+				test.value, v, test.expected)
 		}
 	}
 }
 
-// TestCatalan tests Trans function for Catalan language.
+// TestCatalan tests Trans for Catalan.
 func TestCatalan(t *testing.T) {
-	tests := []struct {
-		value    string
-		expected string
-	}{
-		{
-			"À à É é È è Í í Ï ï Ó ó Ò ò Ú ú Ü ü Ç ç",
-			"A a E e E e I i I i O o O o U u U u C c",
-		},
-	}
-
-	for _, test := range tests {
-		if v := Trans(lang.CA, test.value); v != test.expected {
-			t.Errorf("expected %s but %s", test.expected, v)
-		}
+	value := "À à É é È è Í í Ï ï Ó ó Ò ò Ú ú Ü ü Ç ç"
+	want := "A a E e E e I i I i O o O o U u U u C c"
+	if v := Trans(lang.CA, value); v != want {
+		t.Errorf("Trans(CA): got %q want %q", v, want)
 	}
 }
 
-// TestCroatian tests Trans function for Croatian language.
+// TestCroatian tests Trans for Croatian.
 func TestCroatian(t *testing.T) {
 	tests := []struct {
 		value    string
@@ -214,45 +193,41 @@ func TestCroatian(t *testing.T) {
 
 	for _, test := range tests {
 		if v := Trans(lang.HR, test.value); v != test.expected {
-			t.Errorf("expected %s but %s", test.expected, v)
+			t.Errorf("Trans(HR, %q): got %q want %q",
+				test.value, v, test.expected)
 		}
 	}
 }
 
-// TestDanish tests Trans function for Danish language.
+// TestDanish tests Trans for Danish.
 func TestDanish(t *testing.T) {
-	tests := []struct {
-		value    string
-		expected string
-	}{
-		{"Æ Ø Å æ ø å", "AE Oe Aa ae oe aa"},
-	}
-
-	for _, test := range tests {
-		if v := Trans(lang.DA, test.value); v != test.expected {
-			t.Errorf("expected %s but %s", test.expected, v)
-		}
+	value, want := "Æ Ø Å æ ø å", "AE Oe Aa ae oe aa"
+	if v := Trans(lang.DA, value); v != want {
+		t.Errorf("Trans(DA): got %q want %q", v, want)
 	}
 }
 
-// TestEsperanto tests Render function for Esperanto language.
+// TestEsperanto tests Trans for Esperanto: every accented letter, including Ĉ,
+// must use the x-system (Ĉ -> "Cx"), which the dead 24/25 entries broke before.
 func TestEsperanto(t *testing.T) {
 	tests := []struct {
 		value    string
 		expected string
 	}{
-		{"Ĉ Ĝ Ĥ Ĵ Ŝ Ŭ", "C Gx Hx Jx Sx Ux"},
-		{"ĉ ĝ ĥ ĵ ŝ ŭ", "c gx hx jx sx ux"},
+		{"Ĉ Ĝ Ĥ Ĵ Ŝ Ŭ", "Cx Gx Hx Jx Sx Ux"},
+		{"ĉ ĝ ĥ ĵ ŝ ŭ", "cx gx hx jx sx ux"},
 	}
 
 	for _, test := range tests {
-		if v := Render(lang.EO, test.value, nil); v != test.expected {
-			t.Errorf("expected %s but %s", test.expected, v)
+		if v := Trans(lang.EO, test.value); v != test.expected {
+			t.Errorf("Trans(EO, %q): got %q want %q",
+				test.value, v, test.expected)
 		}
 	}
 }
 
-// TestGerman tests Render function for German language.
+// TestGerman tests Trans for German, including the all-caps title-case
+// behaviour ("ÄÖÜ" -> "AeOeUe", not "AEOEUE").
 func TestGerman(t *testing.T) {
 	tests := []struct {
 		value    string
@@ -260,16 +235,19 @@ func TestGerman(t *testing.T) {
 	}{
 		{"Ä Ö Ü ẞ", "Ae Oe Ue Ss"},
 		{"ä ö ü ß", "ae oe ue ss"},
+		{"ÄÖÜ", "AeOeUe"},
+		{"Müller", "Mueller"},
 	}
 
 	for _, test := range tests {
-		if v := Render(lang.DE, test.value, nil); v != test.expected {
-			t.Errorf("expected %s but %s", test.expected, v)
+		if v := Trans(lang.DE, test.value); v != test.expected {
+			t.Errorf("Trans(DE, %q): got %q want %q",
+				test.value, v, test.expected)
 		}
 	}
 }
 
-// TestHungarian tests Render function for Hungarian language.
+// TestHungarian tests Trans for Hungarian.
 func TestHungarian(t *testing.T) {
 	tests := []struct {
 		value    string
@@ -280,13 +258,14 @@ func TestHungarian(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(lang.HU, test.value, nil); v != test.expected {
-			t.Errorf("expected %s but %s", test.expected, v)
+		if v := Trans(lang.HU, test.value); v != test.expected {
+			t.Errorf("Trans(HU, %q): got %q want %q",
+				test.value, v, test.expected)
 		}
 	}
 }
 
-// TestMacedonian tests Render function for Macedonian language.
+// TestMacedonian tests Trans for Macedonian.
 func TestMacedonian(t *testing.T) {
 	tests := []struct {
 		value    string
@@ -297,13 +276,14 @@ func TestMacedonian(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(lang.MK, test.value, nil); v != test.expected {
-			t.Errorf("expected %s but %s", test.expected, v)
+		if v := Trans(lang.MK, test.value); v != test.expected {
+			t.Errorf("Trans(MK, %q): got %q want %q",
+				test.value, v, test.expected)
 		}
 	}
 }
 
-// TestNorwegian tests Render function for Norwegian language.
+// TestNorwegian tests Trans for Norwegian.
 func TestNorwegian(t *testing.T) {
 	tests := []struct {
 		value    string
@@ -314,13 +294,14 @@ func TestNorwegian(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(lang.NB, test.value, nil); v != test.expected {
-			t.Errorf("expected %s but %s", test.expected, v)
+		if v := Trans(lang.NB, test.value); v != test.expected {
+			t.Errorf("Trans(NB, %q): got %q want %q",
+				test.value, v, test.expected)
 		}
 	}
 }
 
-// TestRussian tests Render function for Russian language.
+// TestRussian tests Trans for Russian.
 func TestRussian(t *testing.T) {
 	tests := []struct {
 		value    string
@@ -332,29 +313,22 @@ func TestRussian(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(lang.RU, test.value, nil); v != test.expected {
-			t.Errorf("expected %s but %s", test.expected, v)
+		if v := Trans(lang.RU, test.value); v != test.expected {
+			t.Errorf("Trans(RU, %q): got %q want %q",
+				test.value, v, test.expected)
 		}
 	}
 }
 
-// TestSerbian tests Render function for Serbian language.
+// TestSerbian tests Trans for Serbian.
 func TestSerbian(t *testing.T) {
-	tests := []struct {
-		value    string
-		expected string
-	}{
-		{"Đ đ Ђ ђ", "Dj dj Dje dje"},
-	}
-
-	for _, test := range tests {
-		if v := Render(lang.SR, test.value, nil); v != test.expected {
-			t.Errorf("expected %s but %s", test.expected, v)
-		}
+	value, want := "Đ đ Ђ ђ", "Dj dj Dje dje"
+	if v := Trans(lang.SR, value); v != want {
+		t.Errorf("Trans(SR): got %q want %q", v, want)
 	}
 }
 
-// TestSlovenian tests Render function for Slovenian language.
+// TestSlovenian tests Trans for Slovenian.
 func TestSlovenian(t *testing.T) {
 	tests := []struct {
 		value    string
@@ -372,13 +346,14 @@ func TestSlovenian(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(lang.SL, test.value, nil); v != test.expected {
-			t.Errorf("expected %s but %s", test.expected, v)
+		if v := Trans(lang.SL, test.value); v != test.expected {
+			t.Errorf("Trans(SL, %q): got %q want %q",
+				test.value, v, test.expected)
 		}
 	}
 }
 
-// TestSwedish tests Render function for Swedish language.
+// TestSwedish tests Trans for Swedish.
 func TestSwedish(t *testing.T) {
 	tests := []struct {
 		value    string
@@ -389,13 +364,16 @@ func TestSwedish(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(lang.SV, test.value, nil); v != test.expected {
-			t.Errorf("expected %s but %s", test.expected, v)
+		if v := Trans(lang.SV, test.value); v != test.expected {
+			t.Errorf("Trans(SV, %q): got %q want %q",
+				test.value, v, test.expected)
 		}
 	}
 }
 
-// TestUkrainian tests Render function for Ukrainian language.
+// TestUkrainian tests Trans for Ukrainian against the official romanization of
+// a large set of place names, covering initial vs in-word forms, зг -> zgh,
+// apostrophes and the soft sign.
 func TestUkrainian(t *testing.T) {
 	tests := []struct {
 		value    string
@@ -476,8 +454,9 @@ func TestUkrainian(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		if v := Render(lang.UK, test.value, nil); v != test.expected {
-			t.Errorf("expected %s but %s", test.expected, v)
+		if v := Trans(lang.UK, test.value); v != test.expected {
+			t.Errorf("Trans(UK, %q): got %q want %q",
+				test.value, v, test.expected)
 		}
 	}
 }

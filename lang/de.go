@@ -12,13 +12,5 @@ var german = map[int]string{
 	7838: "Ss", // 7838, U+1E9E, 'ẞ', "Ss"
 }
 
-// The deRules implements the rules of transliteration into German.
-func deRules(ts TransState) (string, int, bool) {
-	result, id, offset, changed := "", int(ts.Curr), 0, false
-	if v, ok := german[id]; ok {
-		result = v
-		changed = true
-	}
-
-	return result, offset, changed
-}
+// deRules implements the rules of transliteration.
+var deRules = mapRules(german)

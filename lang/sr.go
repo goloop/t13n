@@ -8,13 +8,5 @@ var serbian = map[int]string{
 	1106: "dje", // 1106, U+0452, 'ђ', "dje"
 }
 
-// The srRules implements the rules of transliteration into Serbian.
-func srRules(ts TransState) (string, int, bool) {
-	result, id, offset, changed := "", int(ts.Curr), 0, false
-	if v, ok := serbian[id]; ok {
-		result = v
-		changed = true
-	}
-
-	return result, offset, changed
-}
+// srRules implements the rules of transliteration.
+var srRules = mapRules(serbian)

@@ -8,13 +8,5 @@ var danish = map[int]string{
 	248: "oe", // 248, U+00F8, 'ø', "o"
 }
 
-// The daRules implements the rules of transliteration into Danish.
-func daRules(ts TransState) (string, int, bool) {
-	result, id, offset, changed := "", int(ts.Curr), 0, false
-	if v, ok := danish[id]; ok {
-		result = v
-		changed = true
-	}
-
-	return result, offset, changed
-}
+// daRules implements the rules of transliteration.
+var daRules = mapRules(danish)

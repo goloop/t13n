@@ -6,13 +6,5 @@ var slovenian = map[int]string{
 	273: "dj", // 273, U+0111, 'đ', "d"
 }
 
-// The slRules implements the rules of transliteration into Slovenian.
-func slRules(ts TransState) (string, int, bool) {
-	result, id, offset, changed := "", int(ts.Curr), 0, false
-	if v, ok := slovenian[id]; ok {
-		result = v
-		changed = true
-	}
-
-	return result, offset, changed
-}
+// slRules implements the rules of transliteration.
+var slRules = mapRules(slovenian)

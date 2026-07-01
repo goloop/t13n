@@ -403,6 +403,20 @@ type TransState struct {
 // transliteration according to the specifics of the specified language.
 type TransRules func(TransState) (string, int, bool)
 
+// mapRules builds a TransRules that replaces a character with the value
+// mapped to its code point in m, if any. It is the shared implementation for
+// languages whose rules are a plain single-character lookup table, so those
+// languages need only declare their map.
+func mapRules(m map[int]string) TransRules {
+	return func(ts TransState) (string, int, bool) {
+		if v, ok := m[int(ts.Curr)]; ok {
+			return v, 0, true
+		}
+
+		return "", 0, false
+	}
+}
+
 // Rules returns the corresponding transliteration correction function
 // for the specified language. Or returns nil if there is no such function.
 func Rules(lang string) TransRules {
