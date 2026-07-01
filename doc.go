@@ -29,9 +29,13 @@
 //	s := t13n.Render(lang.UK, "Доброго вечора", slug) // "dobroho-vechora"
 //
 // Guarantees:
-//   - The output is always pure 7-bit ASCII.
+//   - The output of the built-in tables and language rules is always pure
+//     7-bit ASCII. A custom rule (see [Render], [WithRules]) or fallback (see
+//     [WithFallback]) is responsible for its own output; enable
+//     [WithStrictASCII] to strip any non-ASCII it produces.
 //   - Characters with no mapping (including code points outside the Basic
-//     Multilingual Plane) are dropped; use [Rune] to detect them.
+//     Multilingual Plane) are dropped; use [Rune] to detect them or
+//     [WithFallback] to supply a replacement.
 //   - No function panics on any input, including invalid UTF-8.
 //
 // For language-specific transliteration, use the constants in the lang package

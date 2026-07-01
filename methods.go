@@ -1,9 +1,13 @@
 package t13n
 
-import "github.com/goloop/t13n/v2/lang"
+import (
+	"iter"
+
+	"github.com/goloop/t13n/v2/lang"
+)
 
 // version is the module version, reported by Version.
-const version = "v2.0.0"
+const version = "v2.1.0"
 
 // Version returns the module version in the form
 // "v{major}.{minor}.{patch}".
@@ -41,18 +45,29 @@ func Rune(c rune) (string, bool) {
 // Make transliterates a Unicode string to ASCII without applying any
 // regional linguistic rules.
 func Make(text string) string {
-	return render(lang.None, text, nil)
+	return render(lang.None, text, nil, nil, false)
 }
 
 // Trans transliterates a Unicode string to ASCII, applying the regional
 // rules of the given language (see the lang package for language codes).
 func Trans(l, text string) string {
-	return render(l, text, nil)
+	return render(l, text, nil, nil, false)
 }
 
 // Render transliterates a Unicode string to ASCII, applying the regional
 // rules of the given language and, when ctr is non-nil, a custom rule
 // function applied last (for example, to build slugs).
 func Render(l, text string, ctr lang.TransRules) string {
-	return render(l, text, ctr)
+	return render(l, text, ctr, nil, false)
+}
+
+// RunesSeq returns an iterator over the transliteration of text with the
+// regional rules of the given language. Each step yields the source rune that
+// produced a unit of output together with that unit's ASCII value; runes
+// consumed by a digraph rule are folded into the preceding step. It lets a
+// caller stream the result without building the whole string at once.
+func RunesSeq(l, text string) iter.Seq2[rune, string] {
+	return func(yield func(rune, string) bool) {
+		walk(l, text, nil, nil, yield)
+	}
 }

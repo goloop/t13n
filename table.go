@@ -50,10 +50,16 @@ func decode(data []byte) *[tableSize]string {
 	cp := 0
 	for i := 0; i < len(raw); {
 		delta, n := binary.Uvarint(raw[i:])
+		if n <= 0 {
+			panic("t13n: corrupt transliteration table (truncated code point)")
+		}
 		i += n
 		cp += int(delta)
 
 		length, n := binary.Uvarint(raw[i:])
+		if n <= 0 {
+			panic("t13n: corrupt transliteration table (truncated length)")
+		}
 		i += n
 		arr[cp] = string(raw[i : i+int(length)])
 		i += int(length)

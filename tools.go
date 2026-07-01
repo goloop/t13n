@@ -86,24 +86,29 @@ func isApostrophe(ts lang.TransState) bool {
 	return false
 }
 
-// render transliterates text to ASCII in a single left-to-right pass, applying
-// the base table, then the language rules ltr, then the custom rules ctr. A
-// rule may consume trailing runes by returning a positive offset (for digraphs
-// such as "зг" -> "zgh"). The pass is deliberately sequential: transliteration
-// is CPU-light, and a single pass with a preallocated builder avoids both the
+// walk transliterates text to ASCII in a single left-to-right pass, applying
+// the base table, then the language rules ltr, an optional fallback fb for
+// runes that would otherwise vanish, and finally the custom rules ctr. For
+// each emitted unit it calls emit with the source rune that produced the value
+// and the value itself; emit returns false to stop the walk early (used by the
+// RunesSeq iterator). A rule may consume trailing runes by returning a positive
+// offset (for digraphs such as "зг" -> "zgh"). The pass is deliberately
+// sequential: transliteration is CPU-light, and a single pass avoids both the
 // quadratic concatenation of the previous implementation and the complexity
 // (and data races) of stitching parallel chunks back together.
-func render(l, text string, ctr lang.TransRules) string {
+func walk(
+	l, text string,
+	ctr lang.TransRules,
+	fb func(rune) string,
+	emit func(rune, string) bool,
+) {
 	if text == "" {
-		return ""
+		return
 	}
 
 	runes := []rune(text)
 	ltr := lang.Rules(l)
 	tbl := table()
-
-	var b strings.Builder
-	b.Grow(len(text))
 
 	isBegin := true
 	for i := 0; i < len(runes); i++ {
@@ -115,9 +120,13 @@ func render(l, text string, ctr lang.TransRules) string {
 			ts.Next = runes[i+1]
 		}
 
-		// Base transliteration from the table.
+		// Base transliteration from the table. mapped tracks whether any
+		// stage produced a real mapping, so the fallback fires only for
+		// runes that would otherwise silently vanish.
+		mapped := false
 		if id := int(ts.Curr); id >= 0 && id < tableSize {
 			ts.Value = tbl[id]
+			mapped = ts.Value != ""
 		}
 		ts.IsApostrophe = isApostrophe(ts)
 
@@ -128,6 +137,7 @@ func render(l, text string, ctr lang.TransRules) string {
 			if v, m, ok := ltr(ts); ok {
 				ts.Value = v
 				offset = m
+				mapped = true
 			}
 		}
 
@@ -139,6 +149,12 @@ func render(l, text string, ctr lang.TransRules) string {
 			}
 		}
 
+		// Fallback fills in a value for a rune with no mapping (unknown or
+		// outside the Basic Multilingual Plane) so it need not vanish.
+		if !mapped && fb != nil {
+			ts.Value = fb(ts.Curr)
+		}
+
 		// Custom rules run last and win over the language rules.
 		if ctr != nil {
 			if v, m, ok := ctr(ts); ok {
@@ -147,13 +163,63 @@ func render(l, text string, ctr lang.TransRules) string {
 			}
 		}
 
-		b.WriteString(ts.Value)
+		if !emit(ts.Curr, ts.Value) {
+			return
+		}
 		i += offset
 
 		// The word boundary is defined by the character we just handled,
 		// ignoring in-word apostrophes.
 		isBegin = isDelimiter(ts.Curr) && !ts.IsApostrophe
 	}
+}
+
+// render runs walk and assembles the transliterated string. When strict is
+// true, any non-ASCII produced by a custom rule or fallback is stripped, so
+// the "pure 7-bit ASCII" guarantee holds even for custom output.
+func render(l, text string, ctr lang.TransRules, fb func(rune) string, strict bool) string {
+	if text == "" {
+		return ""
+	}
+
+	var b strings.Builder
+	b.Grow(len(text))
+
+	if strict {
+		walk(l, text, ctr, fb, func(_ rune, v string) bool {
+			b.WriteString(asciiOnly(v))
+			return true
+		})
+	} else {
+		walk(l, text, ctr, fb, func(_ rune, v string) bool {
+			b.WriteString(v)
+			return true
+		})
+	}
 
 	return b.String()
+}
+
+// asciiOnly returns s with every non-ASCII byte removed. The common case, an
+// already-ASCII string, is returned unchanged without allocating.
+func asciiOnly(s string) string {
+	ascii := true
+	for i := 0; i < len(s); i++ {
+		if s[i] >= 0x80 {
+			ascii = false
+			break
+		}
+	}
+	if ascii {
+		return s
+	}
+
+	b := make([]byte, 0, len(s))
+	for i := 0; i < len(s); i++ {
+		if s[i] < 0x80 {
+			b = append(b, s[i])
+		}
+	}
+
+	return string(b)
 }
