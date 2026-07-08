@@ -15,7 +15,6 @@ Ukrainian version: **[DOC.UK.md](DOC.UK.md)**.
 - [Custom rules](#custom-rules)
 - [The reusable T13n](#the-reusable-t13n)
 - [Iteration](#iteration)
-- [Version](#version)
 - [Recipes and tips](#recipes-and-tips)
 
 ## Mental model
@@ -178,14 +177,6 @@ for r, s := range t13n.RunesSeq(lang.UK, "Київ") {
     fmt.Printf("%c -> %q\n", r, s)
 }
 ```
-
-## Version
-
-```go
-func Version() string
-```
-
-Returns the module version as `"v{major}.{minor}.{patch}"`.
 
 ## Recipes and tips
 

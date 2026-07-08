@@ -397,6 +397,12 @@ type TransState struct {
 	// IsApostrophe is true if the Curr is apostrophe:
 	// is symbol ` between two not delimiter characters.
 	IsApostrophe bool
+
+	// Taken is how many trailing runes the regional rule already consumed
+	// for the current character (for example a digraph). A custom rule may
+	// return this value to preserve that consumption; it can only extend the
+	// consumption, never shorten it.
+	Taken int
 }
 
 // TransRules a type of special function that can correct

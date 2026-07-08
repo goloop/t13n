@@ -2,6 +2,7 @@ package t13n
 
 import (
 	"strings"
+	"unicode"
 
 	"github.com/goloop/t13n/v2/lang"
 )
@@ -52,11 +53,12 @@ func inRanges(c rune, ranges [][2]rune) bool {
 	return false
 }
 
-// isDelimiter reports whether c separates characters. The NUL rune and every
-// range in delimiterRanges (whitespace, punctuation, digits, apostrophes)
-// count as delimiters.
+// isDelimiter reports whether c separates characters. The NUL rune, every
+// Unicode whitespace character (spaces, line breaks, non-breaking and
+// fixed-width spaces) and every range in delimiterRanges (ASCII punctuation,
+// digits, apostrophes) count as delimiters.
 func isDelimiter(c rune) bool {
-	if c == 0 {
+	if c == 0 || unicode.IsSpace(c) {
 		return true
 	}
 
@@ -128,21 +130,32 @@ func walk(
 			ts.Value = tbl[id]
 			mapped = ts.Value != ""
 		}
+
+		// Unicode whitespace with no ASCII mapping (a non-breaking space,
+		// the various fixed-width spaces) collapses to a plain space so it
+		// stays a visible word separator instead of vanishing and gluing the
+		// surrounding words together.
+		if !mapped && unicode.IsSpace(ts.Curr) {
+			ts.Value = " "
+			mapped = true
+		}
 		ts.IsApostrophe = isApostrophe(ts)
 
 		// Regional language rules may override the value and consume
-		// following runes.
+		// following runes. A negative offset is clamped so a misbehaving rule
+		// cannot rewind the walk into an endless loop.
 		offset := 0
 		if ltr != nil {
 			if v, m, ok := ltr(ts); ok {
 				ts.Value = v
-				offset = m
+				offset = max(m, 0)
 				mapped = true
 			}
 		}
 
 		// A hieroglyph carries a trailing space so that "世界" reads as
-		// "Shi Jie"; drop it when the next character continues the word.
+		// "Shi Jie"; drop it at the end of a word (before a delimiter or the
+		// end of the text) so no stray space is left dangling.
 		if isHieroglyph(ts.Curr) {
 			if ts.Next == 0 || isDelimiter(ts.Next) {
 				ts.Value = strings.TrimRight(ts.Value, " ")
@@ -155,11 +168,18 @@ func walk(
 			ts.Value = fb(ts.Curr)
 		}
 
-		// Custom rules run last and win over the language rules.
+		// Custom rules run last and win over the language rules. Taken tells
+		// the rule how many trailing runes the regional rule already consumed
+		// (a digraph), so it can preserve that consumption; a custom rule may
+		// only extend the offset, never shorten it, since it cannot know the
+		// base consumption it would otherwise discard.
 		if ctr != nil {
+			ts.Taken = offset
 			if v, m, ok := ctr(ts); ok {
 				ts.Value = v
-				offset = m
+				if m > offset {
+					offset = m
+				}
 			}
 		}
 

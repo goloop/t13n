@@ -3,16 +3,10 @@ package t13n
 import (
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/goloop/t13n/v2/lang"
 )
-
-// TestVersion checks the version has the documented shape.
-func TestVersion(t *testing.T) {
-	if v := Version(); !strings.HasPrefix(v, "v2.") {
-		t.Errorf("unexpected version %q", v)
-	}
-}
 
 // TestMake tests Make against a broad range of scripts.
 func TestMake(t *testing.T) {
@@ -41,6 +35,7 @@ func TestMake(t *testing.T) {
 		{"ສະບາຍດີ", "sabaanydii"},
 		{"Hello 世界", "Hello Shi Jie"},
 		{"こんにちは、みんな", "Ko N Ni Chi Ha Mi N Na"},
+		{"", ""},
 	}
 
 	for _, test := range tests {
@@ -103,6 +98,81 @@ func TestRenderSlug(t *testing.T) {
 			t.Errorf("Render(slug, %q): got %q want %q",
 				test.value, v, test.expected)
 		}
+	}
+}
+
+// TestRenderSlugDigraph pins that a custom rule returning offset 0 does not
+// undo the consumption of a regional digraph: the rune consumed by the digraph
+// must not be transliterated a second time.
+func TestRenderSlugDigraph(t *testing.T) {
+	slug := func(ts lang.TransState) (string, int, bool) {
+		if ts.Value == " " {
+			return "-", 0, true
+		}
+		return strings.ToLower(ts.Value), 0, true
+	}
+
+	tests := []struct {
+		value, expected string
+	}{
+		{"Згадка", "zghadka"},
+		{"Гуйва", "huyva"},
+		{"зг уй", "zgh-uy"},
+	}
+	for _, test := range tests {
+		if v := Render(lang.UK, test.value, slug); v != test.expected {
+			t.Errorf("Render(UK, slug, %q): got %q want %q",
+				test.value, v, test.expected)
+		}
+	}
+
+	// A custom rule may extend consumption beyond the regional rule by
+	// returning a larger offset: here 'x' swallows the following rune.
+	consume := func(ts lang.TransState) (string, int, bool) {
+		if ts.Curr == 'x' {
+			return "X", 1, true
+		}
+		return ts.Value, 0, true
+	}
+	if v := Render(lang.None, "xyz", consume); v != "Xz" {
+		t.Errorf("custom rule extending offset: got %q want %q", v, "Xz")
+	}
+}
+
+// TestWhitespaceWordBoundary checks that line breaks and a non-breaking space
+// act as word separators (so word-initial regional forms are chosen) and that
+// a non-breaking space is rendered as a plain space instead of vanishing.
+func TestWhitespaceWordBoundary(t *testing.T) {
+	tests := []struct {
+		value, expected string
+	}{
+		{"хата\nЄвропа", "khata\nYevropa"},
+		{"хата\rЄвропа", "khata\rYevropa"},
+		{"хата Європа", "khata Yevropa"}, // NBSP between the words
+		{"хата Європа", "khata Yevropa"}, // plain space, unchanged
+	}
+	for _, test := range tests {
+		if v := Trans(lang.UK, test.value); v != test.expected {
+			t.Errorf("Trans(UK, %q): got %q want %q",
+				test.value, v, test.expected)
+		}
+	}
+}
+
+// TestNegativeOffsetNoHang makes sure a custom rule that returns a negative
+// offset cannot rewind the walk into an endless loop.
+func TestNegativeOffsetNoHang(t *testing.T) {
+	bad := func(lang.TransState) (string, int, bool) { return "x", -1, true }
+
+	done := make(chan string, 1)
+	go func() { done <- Render(lang.None, "abc", bad) }()
+	select {
+	case got := <-done:
+		if got != "xxx" {
+			t.Errorf("negative offset: got %q, want %q", got, "xxx")
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("Render with a negative custom offset did not terminate")
 	}
 }
 

@@ -6,15 +6,6 @@ import (
 	"github.com/goloop/t13n/v2/lang"
 )
 
-// version is the module version, reported by Version.
-const version = "v2.1.0"
-
-// Version returns the module version in the form
-// "v{major}.{minor}.{patch}".
-func Version() string {
-	return version
-}
-
 // String returns the base ASCII transliteration of a single code point,
 // ignoring any regional linguistic rules. It returns an empty string when
 // the rune has no mapping (including runes outside the Basic Multilingual

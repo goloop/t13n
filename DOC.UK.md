@@ -179,14 +179,6 @@ for r, s := range t13n.RunesSeq(lang.UK, "Київ") {
 }
 ```
 
-## Версія
-
-```go
-func Version() string
-```
-
-Повертає версію модуля як `"v{major}.{minor}.{patch}"`.
-
 ## Рецепти й поради
 
 **Будуйте один транслітератор на мову.** `t13n.New(t13n.WithLang(...))`

@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0]
+
+Minor release: correctness fixes in the transliteration engine. Word-boundary
+handling changes the output for some multiline and non-breaking-space input.
+
+### Fixed
+- A custom rule returning offset 0 no longer discards the runes a regional
+  digraph already consumed, so a digraph followed by a custom rule is not
+  transliterated twice (for example `Render(lang.UK, "Згадка", slug)` now
+  yields `zghadka`, not `zghhadka`). Custom rules may still extend consumption
+  by returning a larger offset.
+- Line breaks (`\n`, `\r`, `\v`, `\f`), non-breaking spaces and the various
+  Unicode spaces now count as word separators, so word-initial regional forms
+  are chosen correctly after them; a non-breaking space is rendered as a plain
+  space instead of vanishing and gluing the surrounding words.
+- A custom rule returning a negative offset can no longer rewind the walk into
+  an endless loop; the offset is clamped to zero.
+
+### Added
+- `lang.TransState.Taken` exposes how many trailing runes the regional rule
+  already consumed, so a custom rule can preserve a digraph deliberately.
+
+### Removed
+- The `Version` function and its constant. The release version is tracked by
+  the git tag and CHANGELOG, not in code.
+
 ## [2.1.0]
 
 ### Added
