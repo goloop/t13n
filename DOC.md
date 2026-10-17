@@ -197,3 +197,7 @@ when you actually want slugs.
 
 **Stream large input.** `RunesSeq` lets you consume the transliteration lazily,
 pair by pair, instead of building one large string.
+
+## Release v2.2.2
+
+Walk UTF-8 directly and handle large rule offsets safely.

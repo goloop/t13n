@@ -3,6 +3,7 @@ package t13n
 import (
 	"strings"
 	"unicode"
+	"unicode/utf8"
 
 	"github.com/goloop/t13n/v2/lang"
 )
@@ -108,23 +109,21 @@ func walk(
 		return
 	}
 
-	runes := []rune(text)
 	ltr := lang.Rules(l)
 	tbl := table()
 
 	isBegin := true
-	for i := 0; i < len(runes); i++ {
-		ts := lang.TransState{Curr: runes[i], IsBegin: isBegin}
-		if i > 0 {
-			ts.Prev = runes[i-1]
-		}
-		if i < len(runes)-1 {
-			ts.Next = runes[i+1]
+	var prev rune
+	for i := 0; i < len(text); {
+		curr, size := utf8.DecodeRuneInString(text[i:])
+		ts := lang.TransState{Curr: curr, Prev: prev, IsBegin: isBegin}
+		i += size
+		if i < len(text) {
+			ts.Next, _ = utf8.DecodeRuneInString(text[i:])
 		}
 
-		// Base transliteration from the table. mapped tracks whether any
-		// stage produced a real mapping, so the fallback fires only for
-		// runes that would otherwise silently vanish.
+		// Base transliteration from the table. Track whether a rule mapped
+		// the rune so fallback only handles characters without a mapping.
 		mapped := false
 		if id := int(ts.Curr); id >= 0 && id < tableSize {
 			ts.Value = tbl[id]
@@ -186,7 +185,12 @@ func walk(
 		if !emit(ts.Curr, ts.Value) {
 			return
 		}
-		i += offset
+		prev = curr
+		for skipped := 0; skipped < offset && i < len(text); skipped++ {
+			var size int
+			prev, size = utf8.DecodeRuneInString(text[i:])
+			i += size
+		}
 
 		// The word boundary is defined by the character we just handled,
 		// ignoring in-word apostrophes.

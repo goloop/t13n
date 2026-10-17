@@ -78,3 +78,7 @@ Contributions are welcome. Please run `go test ./...`, `go vet ./...` and
 ## License
 
 `t13n` is released under the MIT License. See [LICENSE](LICENSE).
+
+## Release v2.2.2
+
+Walk UTF-8 directly and handle large rule offsets safely.
